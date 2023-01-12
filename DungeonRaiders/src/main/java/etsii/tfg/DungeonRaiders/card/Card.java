@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +16,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="cards")
-public class Card {
+@Table(name = "cards")
+public class Card extends BaseEntity {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "player_id")

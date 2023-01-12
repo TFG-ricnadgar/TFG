@@ -11,14 +11,15 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.game.Game;
+import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@Table(name="rooms")
-public class Room {
+@Table(name = "rooms")
+public class Room extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "game_id")
@@ -40,6 +41,5 @@ public class Room {
     @Min(0)
     @Max(5)
     private Integer floor;
-
 
 }
