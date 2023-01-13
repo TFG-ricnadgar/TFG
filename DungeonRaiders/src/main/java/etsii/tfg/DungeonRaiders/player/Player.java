@@ -1,5 +1,6 @@
 package etsii.tfg.DungeonRaiders.player;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,8 +22,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "players")
-public class Player extends BaseEntity{
-    
+public class Player extends BaseEntity {
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
@@ -41,5 +42,6 @@ public class Player extends BaseEntity{
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)
+    @Column(name = "character_name")
     private Character character;
 }
