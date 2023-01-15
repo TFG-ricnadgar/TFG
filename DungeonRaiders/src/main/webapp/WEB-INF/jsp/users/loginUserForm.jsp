@@ -32,6 +32,12 @@
                                         <img src="/img/Antorcha.png" width="50px">
                                     </div>
                                 </div>
+                                <div>
+                                    ¿No eres todavía un aventurero?
+                                </div>
+                                <div>
+                                    <a href="/user/register" style="color: #e86e02;">Únete ahora</a>
+                                </div>
                             </form:form>
                         </div>
                     </div>

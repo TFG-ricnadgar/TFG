@@ -14,7 +14,6 @@
                 <img src="/img/Enemigos.png" style="max-width: 530px;" />
             </div>
         </div>
-
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-sm-8 text-center" style="font-family:fantasy; letter-spacing: 1px;">
