@@ -1,6 +1,7 @@
 package etsii.tfg.DungeonRaiders.user;
 
 import javax.validation.constraints.NotEmpty;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -15,6 +16,7 @@ import etsii.tfg.DungeonRaiders.model.BaseEntity;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    @Column(unique = true)
     @NotEmpty
     private String username;
 
@@ -22,4 +24,3 @@ public class User extends BaseEntity {
     private String password;
 
 }
-    
