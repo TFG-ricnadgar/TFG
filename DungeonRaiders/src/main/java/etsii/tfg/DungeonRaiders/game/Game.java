@@ -10,12 +10,13 @@ import javax.validation.constraints.NotNull;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder.Default;
 
 @Entity
 @Getter
 @Setter
-@Table(name="games")
-public class Game extends BaseEntity{
+@Table(name = "games")
+public class Game extends BaseEntity {
 
     @NotBlank
     private String gameName;
@@ -23,19 +24,32 @@ public class Game extends BaseEntity{
     @NotBlank
     private String creatorUsername;
 
+    private String winnerUsername;
+
     @NotNull
-    private Integer turn;
+    @Min(3)
+    @Max(5)
+    private Integer maxPlayers = 5;
+
+    @NotNull
+    private Integer turn = 0;
 
     @NotNull
     @Min(0)
     @Max(5)
-    private Integer currentFloor;
+    private Integer currentFloor = 0;
 
     @NotNull
     @Min(0)
     @Max(5)
-    private Integer currentRoom;
+    private Integer currentRoom = 0;
 
+    public Boolean isActive() {
+        return winnerUsername == null;
+    }
 
-    
+    public Boolean isInLobby() {
+        return turn == 0;
+    }
+
 }
