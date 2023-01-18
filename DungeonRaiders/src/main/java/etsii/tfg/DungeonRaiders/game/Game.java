@@ -1,6 +1,10 @@
 package etsii.tfg.DungeonRaiders.game;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -8,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
+import etsii.tfg.DungeonRaiders.player.Player;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder.Default;
@@ -19,7 +24,7 @@ import lombok.Builder.Default;
 public class Game extends BaseEntity {
 
     @NotBlank
-    private String gameName;
+    private String name;
 
     @NotBlank
     private String creatorUsername;
@@ -39,6 +44,9 @@ public class Game extends BaseEntity {
     @Max(5)
     private Integer currentFloor = 0;
 
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Player> players;
+
     @NotNull
     @Min(0)
     @Max(5)
@@ -50,6 +58,10 @@ public class Game extends BaseEntity {
 
     public Boolean isInLobby() {
         return turn == 0;
+    }
+
+    public Boolean isFull() {
+        return maxPlayers == players.size();
     }
 
 }

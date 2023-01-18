@@ -62,7 +62,7 @@ public class UserController {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
             userService.save(user);
-            return "redirect:" + LOGIN_USER_URL;
+            return "redirect:/user" + LOGIN_USER_URL;
 
         }
     }

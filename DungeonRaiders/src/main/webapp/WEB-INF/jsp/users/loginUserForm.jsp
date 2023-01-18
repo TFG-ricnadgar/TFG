@@ -25,7 +25,7 @@
                                         <div class="col-8">
                                             <button type="submit" class="btn btn-lg btn-primary btn-block"
                                                 style="background-color: #e86e02; border-color: #9b5c26;">
-                                                <u>Adentrate en la mazmorra</u>
+                                                <u>Adéntrate en la mazmorra</u>
                                             </button>
                                         </div>
                                         <div class="col">

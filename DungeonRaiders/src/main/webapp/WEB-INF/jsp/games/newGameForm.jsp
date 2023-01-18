@@ -31,7 +31,7 @@
                                     </c:forEach>
                                 </c:if>
                                 <form:form modelAttribute="game" class="form-vertical">
-                                    <dungeonRaiders:inputField name="gameName" label="Nombre de la partida" />
+                                    <dungeonRaiders:inputField name="name" label="Nombre de la partida" />
                                     <h4>Maximo de jugadores en partida</h4>
 
                                     <div class="btn-group btn-group-lg d-grid d-md-flex " role="group"
@@ -59,7 +59,7 @@
                                         <div class="col-8">
                                             <button type="submit" class="btn btn-lg btn-primary btn-block"
                                                 style="background-color: #e86e02; border-color: #9b5c26;">
-                                                <u>Comienza una incursión</u>
+                                                <u>Empieza la aventura</u>
                                             </button>
                                         </div>
                                         <div class="col">

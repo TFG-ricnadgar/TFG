@@ -28,4 +28,9 @@ public class UserService {
         return currentUserName;
     }
 
+    public User authenticatedUser() {
+        User user = findUserByUsername(authenticatedUsername());
+        return user;
+    }
+
 }
