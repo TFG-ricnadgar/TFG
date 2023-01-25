@@ -19,6 +19,12 @@ import lombok.Setter;
 @Table(name = "cards")
 public class Card extends BaseEntity {
 
+    public Card(CardType type, Player player) {
+        this.type = type;
+        this.player = player;
+        this.isUsed = false;
+    }
+
     @ManyToOne(optional = true)
     @JoinColumn(name = "player_id")
     private Player player;
@@ -27,5 +33,7 @@ public class Card extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private CardType type;
 
-    private Boolean isUsed;
+    @NotNull
+    private Boolean isUsed = false;
+
 }

@@ -15,7 +15,6 @@ import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.Player;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder.Default;
 
 @Entity
 @Getter
@@ -62,6 +61,10 @@ public class Game extends BaseEntity {
 
     public Boolean isFull() {
         return maxPlayers == players.size();
+    }
+
+    public Boolean hasEnoughPlayersToStart() {
+        return players.size() >= 3;
     }
 
 }

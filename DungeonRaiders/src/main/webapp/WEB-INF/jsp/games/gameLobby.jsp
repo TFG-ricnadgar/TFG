@@ -41,10 +41,22 @@
                     <c:when test="${pageContext.request.userPrincipal.name == game.creatorUsername}">
                         <div class="row justify-content-center" style="margin-top: 8px;">
                             <div class="col-4">
-                                <button type="button" class="btn btn-lg btn-primary btn-block"
-                                    style="background-color: #e86e02; border-color: #9b5c26;">
-                                    <u>Comienza la incursión</u>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${game.hasEnoughPlayersToStart()}">
+                                        <a href="start">
+                                            <button type="button" class="btn btn-lg btn-primary btn-block"
+                                                style="background-color: #e86e02; border-color: #9b5c26;">
+                                                <u>Comienza la incursión</u>
+                                            </button>
+                                        </a>
+                                    </c:when>
+                                    <c:when test="${!game.hasEnoughPlayersToStart()}">
+                                        <button type="button" class="btn btn-lg btn-primary btn-block"
+                                            style="background-color: #e86e02; border-color: #ac0000;" disabled>
+                                            <u>Esperando a mas aventureros</u>
+                                        </button>
+                                    </c:when>
+                                </c:choose>
                             </div>
 
                         </div>

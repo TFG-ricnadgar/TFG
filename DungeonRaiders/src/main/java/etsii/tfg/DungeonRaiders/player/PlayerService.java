@@ -14,11 +14,15 @@ import etsii.tfg.DungeonRaiders.user.UserService;
 
 @Service
 public class PlayerService {
-    @Autowired
+
     private PlayerRepository playerRepository;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    public PlayerService(PlayerRepository playerRepository, UserService userService) {
+        this.playerRepository = playerRepository;
+        this.userService = userService;
+    }
 
     public void joinGame(Game game) {
         // Creates a new player from the authenticated user and gives them all their
@@ -59,6 +63,10 @@ public class PlayerService {
 
     public void deleteById(Integer id) {
         playerRepository.deletePlayerById(id);
+    }
+
+    public Game activeUserGame() {
+        return playerRepository.activeGameByUsername(userService.authenticatedUsername());
     }
 
 }

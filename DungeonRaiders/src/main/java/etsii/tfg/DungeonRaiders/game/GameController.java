@@ -4,21 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
-import etsii.tfg.DungeonRaiders.user.UserService;
 
 @RequestMapping("/game")
 @Controller
@@ -36,16 +30,22 @@ public class GameController {
     private static final String JOIN_LOBBY_GAME_URL = "/{gameId}/join";
     private static final String EXIT_GAME_URL = "/{gameId}/exit";
     private static final String DELETE_GAME_URL = "/{gameId}/delete";
+    private static final String START_GAME_URL = "/{gameId}/start";
+    private static final String PLAYING_GAME_URL = "/{gameId}/playing";
+    private static final String PLAYING_GAME_VIEW = "games/gamePlaying";
 
-    @Autowired
     private GameService gameService;
+    private PlayerService playerService;
 
     @Autowired
-    private PlayerService playerService;
+    public GameController(GameService gameService, PlayerService playerService) {
+        this.gameService = gameService;
+        this.playerService = playerService;
+    }
 
     @GetMapping(CREATE_GAME_URL)
     public String getNewGameForm(ModelMap modelMap) {
-        Game activeUserGame = gameService.activeUserGame();
+        Game activeUserGame = playerService.activeUserGame();
         Boolean userInGame = activeUserGame != null;
 
         if (userInGame) {
@@ -105,7 +105,7 @@ public class GameController {
     public String joinGameLobby(ModelMap modelMap, @PathVariable("gameId") int gameId) {
         try {
             Game game = gameService.findGameById(gameId);
-            Game activeUserGame = gameService.activeUserGame();
+            Game activeUserGame = playerService.activeUserGame();
             Boolean userAlreadyInGame = activeUserGame != null;
             Boolean gameFull = game.isFull();
             if (userAlreadyInGame) {
@@ -131,5 +131,21 @@ public class GameController {
     public String deleteGame(ModelMap modelMap) {
         gameService.deleteActiveGame();
         return REDIRECT_GAME_BASE + LIST_GAME_URL;
+    }
+
+    @GetMapping(START_GAME_URL)
+    public String startGame(ModelMap modelMap, @PathVariable("gameId") int gameId) {
+        try {
+            Game game = gameService.findGameById(gameId);
+            Boolean activeUserIsGameCreator = gameService.isActiveUserCreator(game);
+            if (activeUserIsGameCreator && game.isInLobby() && game.hasEnoughPlayersToStart()) {
+                gameService.startGame(game);
+                return REDIRECT_GAME_BASE + PLAYING_GAME_URL;
+            } else {
+                return REDIRECT_GAME_BASE + LIST_GAME_URL;
+            }
+        } catch (NoSuchElementException e) {
+            return REDIRECT_GAME_BASE + LIST_GAME_URL;
+        }
     }
 }

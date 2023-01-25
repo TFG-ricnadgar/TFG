@@ -2,30 +2,30 @@ package etsii.tfg.DungeonRaiders.game;
 
 import java.util.List;
 
-import org.apache.catalina.authenticator.SpnegoAuthenticator.AcceptAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.player.Player;
-import etsii.tfg.DungeonRaiders.player.PlayerRepository;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
-import etsii.tfg.DungeonRaiders.user.User;
-import etsii.tfg.DungeonRaiders.user.UserRepository;
 import etsii.tfg.DungeonRaiders.user.UserService;
 
 @Service
 public class GameService {
-    @Autowired
+
     private GameRepository gameRepository;
-
-    @Autowired
-    private PlayerRepository playerRepository;
-
-    @Autowired
     private UserService userService;
+    private PlayerService playerService;
+    private CardService cardService;
 
     @Autowired
-    private PlayerService playerService;
+    public GameService(GameRepository gameRepository, UserService userService,
+            PlayerService playerService, CardService cardService) {
+        this.gameRepository = gameRepository;
+        this.userService = userService;
+        this.playerService = playerService;
+        this.cardService = cardService;
+    }
 
     public List<Game> findAllInLobbyGames() {
         return gameRepository.findAllInLobbyGames();
@@ -46,12 +46,8 @@ public class GameService {
         return gameRepository.findById(gameId).orElseThrow();
     }
 
-    public Game activeUserGame() {
-        return playerRepository.activeGameByUsername(userService.authenticatedUsername());
-    }
-
     public void exitActiveGame() {
-        Game activeGame = activeUserGame();
+        Game activeGame = playerService.activeUserGame();
 
         if (activeGame != null) {
             if (activeGame.isInLobby()) {
@@ -68,10 +64,19 @@ public class GameService {
     }
 
     public void deleteActiveGame() {
-        Game activeGame = activeUserGame();
+        Game activeGame = playerService.activeUserGame();
         if (activeGame.getCreatorUsername().equals(userService.authenticatedUsername())) {
             gameRepository.delete(activeGame);
         }
+    }
+
+    public Boolean isActiveUserCreator(Game game) {
+        return userService.authenticatedUsername().equals(game.getCreatorUsername());
+    }
+
+    public void startGame(Game game) {
+        game.setTurn(1);
+        cardService.givePlayersStartingGameHand(game.getPlayers());
     }
 
 }
