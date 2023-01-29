@@ -5,7 +5,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -15,10 +14,9 @@ import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "rooms")
+@Entity
 public class Room extends BaseEntity {
 
     @ManyToOne(optional = false)
@@ -41,5 +39,8 @@ public class Room extends BaseEntity {
     @Min(0)
     @Max(5)
     private Integer floor;
+
+    @NotNull
+    private String name;
 
 }
