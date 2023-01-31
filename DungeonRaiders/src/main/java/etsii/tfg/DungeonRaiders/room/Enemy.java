@@ -1,5 +1,6 @@
 package etsii.tfg.DungeonRaiders.room;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@DiscriminatorValue("ENEMY")
 public class Enemy extends Room {
 
     @NotNull

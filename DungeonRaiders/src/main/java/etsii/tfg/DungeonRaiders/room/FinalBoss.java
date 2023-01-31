@@ -1,5 +1,6 @@
 package etsii.tfg.DungeonRaiders.room;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@DiscriminatorValue("FINAL_BOSS")
 public class FinalBoss extends Room {
 
     @NotNull
