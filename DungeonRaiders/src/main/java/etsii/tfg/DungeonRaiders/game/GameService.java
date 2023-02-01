@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import etsii.tfg.DungeonRaiders.RoomDungeon.RoomDungeonService;
 import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
@@ -17,14 +18,16 @@ public class GameService {
     private UserService userService;
     private PlayerService playerService;
     private CardService cardService;
+    private RoomDungeonService roomDungeonService;
 
     @Autowired
     public GameService(GameRepository gameRepository, UserService userService,
-            PlayerService playerService, CardService cardService) {
+            PlayerService playerService, CardService cardService, RoomDungeonService roomDungeonService) {
         this.gameRepository = gameRepository;
         this.userService = userService;
         this.playerService = playerService;
         this.cardService = cardService;
+        this.roomDungeonService = roomDungeonService;
     }
 
     public List<Game> findAllInLobbyGames() {
@@ -77,6 +80,7 @@ public class GameService {
     public void startGame(Game game) {
         game.setTurn(1);
         cardService.givePlayersStartingGameHand(game.getPlayers());
+        roomDungeonService.generateDungeon(game);
     }
 
 }

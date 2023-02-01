@@ -12,6 +12,9 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("TRAP")
 public class Trap extends Room {
+
+    private Integer valueTwo;
+
     @NotNull
     private Integer valueThree;
 
