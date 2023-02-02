@@ -69,4 +69,14 @@ public class PlayerService {
         return playerRepository.activeGameByUsername(userService.authenticatedUsername());
     }
 
+    public Player activePlayer() {
+        return playerRepository.activePlayerByUsername(userService.authenticatedUsername());
+    }
+
+    public List<Player> otherPlayersInGame(Game game, Player activePlayer) {
+        List<Player> otherPlayers = game.getPlayers();
+        otherPlayers.remove(activePlayer);
+        return otherPlayers;
+    }
+
 }

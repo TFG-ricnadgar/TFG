@@ -15,7 +15,7 @@
 
 
                 <div class="col-lg text-center" style="color: #e86e02;">
-                    <h1 class="display-3">
+                    <h1 class="display-4">
                         <u>MISIÓN:</u>
                         <span style="color: black;">
                             <c:out value="${game.name}" />

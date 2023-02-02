@@ -1,8 +1,9 @@
 --Users
-INSERT INTO users(username,password) VALUES('user','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
+INSERT INTO users(username,password) VALUES('user1','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
 INSERT INTO users(username,password) VALUES('user2','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
 INSERT INTO users(username,password) VALUES('user3','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
 INSERT INTO users(username,password) VALUES('user4','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
+INSERT INTO users(username,password) VALUES('user5','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
 
 --Traps
 INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ATRAPAMONEDAS','TRAP',1,1,2,2,1,1);

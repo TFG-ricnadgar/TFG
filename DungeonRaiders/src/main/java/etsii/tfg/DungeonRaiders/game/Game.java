@@ -11,6 +11,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.Player;
 import lombok.Getter;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @Table(name = "games")
 public class Game extends BaseEntity {
 
+    @Length(min = 3, max = 20)
     @NotBlank
     private String name;
 
@@ -57,6 +60,10 @@ public class Game extends BaseEntity {
 
     public Boolean isInLobby() {
         return turn == 0;
+    }
+
+    public Boolean isInGame() {
+        return isActive() && !isInLobby();
     }
 
     public Boolean isFull() {

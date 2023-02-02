@@ -1,17 +1,22 @@
 package etsii.tfg.DungeonRaiders.player;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.ForeignKey;
 
+import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.user.User;
@@ -44,4 +49,7 @@ public class Player extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "character_name")
     private Character character;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Card> cards;
 }

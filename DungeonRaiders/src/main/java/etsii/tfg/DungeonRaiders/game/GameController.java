@@ -32,6 +32,7 @@ public class GameController {
     private static final String DELETE_GAME_URL = "/{gameId}/delete";
     private static final String START_GAME_URL = "/{gameId}/start";
     private static final String PLAYING_GAME_URL = "/{gameId}/playing";
+    private static final String PLAYING_GAME_BASE_URL = "/playing";
     private static final String PLAYING_GAME_VIEW = "games/gamePlaying";
 
     private GameService gameService;
@@ -48,8 +49,10 @@ public class GameController {
         Game activeUserGame = playerService.activeUserGame();
         Boolean userInGame = activeUserGame != null;
 
-        if (userInGame) {
+        if (userInGame && activeUserGame.isInLobby()) {
             return REDIRECT_GAME + activeUserGame.getId() + LOBBY_BASE_GAME_URL;
+        } else if (userInGame && activeUserGame.isInGame()) {
+            return REDIRECT_GAME + activeUserGame.getId() + PLAYING_GAME_BASE_URL;
         } else {
             Game game = new Game();
             modelMap.addAttribute("game", game);
@@ -59,12 +62,12 @@ public class GameController {
 
     @PostMapping(CREATE_GAME_URL)
     public String postNewGameForm(ModelMap modelMap, Game game) {
-
-        Boolean gameNameEmpty = game.getName().isBlank();
-        if (gameNameEmpty) {
+        Boolean gameNameShortOrLong = game.getName().length() > 20 || game.getName().length() < 3;
+        if (gameNameShortOrLong) {
             List<String> messages = new ArrayList<String>();
-            if (gameNameEmpty) {
-                messages.add("El nombre de la partida no es adecuado");
+
+            if (gameNameShortOrLong) {
+                messages.add("El nombre de la partida debe tener mas de 3 caracteres y menos de 15");
             }
             modelMap.addAttribute("messages", messages);
             modelMap.addAttribute("game", game);
@@ -86,8 +89,9 @@ public class GameController {
     public String gameLobby(ModelMap modelMap, @PathVariable("gameId") int gameId) {
         try {
             Game game = gameService.findGameById(gameId);
-            Boolean gameStarted = !game.isInLobby();
-            if (gameStarted) {
+            if (game.isInGame()) {
+                return REDIRECT_GAME + game.getId() + PLAYING_GAME_BASE_URL;
+            } else if (!game.isActive()) {
                 return REDIRECT_GAME_BASE + LIST_GAME_URL;
             } else {
                 List<Player> players = game.getPlayers();
@@ -140,7 +144,7 @@ public class GameController {
             Boolean activeUserIsGameCreator = gameService.isActiveUserCreator(game);
             if (activeUserIsGameCreator && game.isInLobby() && game.hasEnoughPlayersToStart()) {
                 gameService.startGame(game);
-                return REDIRECT_GAME_BASE + PLAYING_GAME_URL;
+                return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
             } else {
                 return REDIRECT_GAME_BASE + LIST_GAME_URL;
             }
@@ -148,4 +152,22 @@ public class GameController {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
+
+    @GetMapping(PLAYING_GAME_URL)
+    public String playingGame(ModelMap modelMap, @PathVariable("gameId") int gameId) {
+        try {
+            Game game = gameService.findGameById(gameId);
+            Player activePlayer = playerService.activePlayer();
+            List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
+            modelMap.addAttribute("game", game);
+            modelMap.addAttribute("activePlayer", activePlayer);
+            modelMap.addAttribute("otherPlayers", otherPlayers);
+
+            return PLAYING_GAME_VIEW;
+        } catch (NoSuchElementException e) {
+            return REDIRECT_GAME_BASE + LIST_GAME_URL;
+        }
+
+    }
+
 }
