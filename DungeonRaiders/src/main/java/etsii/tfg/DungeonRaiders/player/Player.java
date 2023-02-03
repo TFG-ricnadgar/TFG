@@ -14,8 +14,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.ForeignKey;
-
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;

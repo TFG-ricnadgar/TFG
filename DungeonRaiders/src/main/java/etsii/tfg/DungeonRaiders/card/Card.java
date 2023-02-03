@@ -19,13 +19,16 @@ import lombok.Setter;
 @Table(name = "cards")
 public class Card extends BaseEntity {
 
+    public Card() {
+    }
+
     public Card(CardType type, Player player) {
         this.type = type;
         this.player = player;
         this.isUsed = false;
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "player_id")
     private Player player;
 

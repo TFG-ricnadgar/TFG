@@ -22,16 +22,92 @@
 
                 <div class="col d-flex justify-content-center">
                     <c:forEach items="${otherPlayers}" var="player">
-                        <dungeonRaiders:inGameUser name="${player.user.username}" img="${player.character.image}"
-                            coins="${player.coins}" wounds="${player.wounds}" />
+                        <div class="card" style="background-color:#c4b3a2;margin:10px;width:14rem">
+                            <div class="row">
+                                <div class="col-md-3 mx-auto my-auto ">
+                                    <img src="${player.character.image}" width="50px" />
+                                </div>
+                                <div class="col-md-7 mx-auto my-auto">
+                                    <c:out value="${player.user.username}" />
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-md-6 my-auto ">
+                                    <img src="/img/Moneda.png" width="30px" />
+                                    <c:out value="${player.coins}" />
+                                </div>
+                                <div class="col-md-5 my-auto">
+                                    <img src="/img/Herida.png" width="30px" />
+                                    <c:out value="${player.wounds}" />
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-sm-8" style="padding-right: 0px;">
+                                    Cartas jugadas :
+                                </div>
+                                <div class="col-md-4" style="padding-left: 0px;">
+                                    <c:forEach items="${player.cards}" var="card">
+                                        <c:if test="${card.isUsed}">
+                                            <c:out value="${card.type.name}" />
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
                     </c:forEach>
                 </div>
 
+                <div class="col d-flex justify-content-center">
+                    <c:forEach items="${activePlayer.cards}" var="card">
+                        <c:if test="${!card.isUsed}">
+                            <div class="card text-center" style="background-color:#f3e1c0;margin:10px;width:8rem">
+                                <c:out value="${card.type.name}" />
+                                <a href="card/${card.id}/play">
+                                    <button type="button" class="btn btn-lg btn-primary btn-block"
+                                        style="background-color: #e86e02; border-color: #9b5c26;">
+                                        <u>Jugar carta</u>
+                                    </button>
+                                </a>
+                            </div>
+
+                        </c:if>
+                    </c:forEach>
+                </div>
 
                 <div class="col d-flex justify-content-center">
-                    <dungeonRaiders:inGameActiveUser name="${activePlayer.user.username}"
-                        img="${activePlayer.character.image}" coins="${activePlayer.coins}"
-                        wounds="${activePlayer.wounds}" />
+
+                    <div class="card" style="background-color:#c2ac98;margin:10px;width:25rem;font-size:25px">
+                        <div class="row">
+                            <div class="col-md-2 mx-auto  my-auto ">
+                                <img src="${activePlayer.character.image}" width="70px" />
+                            </div>
+                            <div class="col-md-8 my-auto mx-auto">
+                                <c:out value="${activePlayer.user.username}" />
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-6 my-auto ">
+                                <img src="/img/Moneda.png" width="50px" />
+                                <c:out value="${activePlayer.coins}" />
+                            </div>
+                            <div class="col-md-5 my-auto">
+                                <img src="/img/Herida.png" width="50px" />
+                                <c:out value="${activePlayer.wounds}" />
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-sm-8" style="padding-right: 0px;">
+                                Cartas jugadas :
+                            </div>
+                            <div class="col-sm-4" style="padding-left: 0px;">
+                                <c:forEach items="${activePlayer.cards}" var="card">
+                                    <c:if test="${card.isUsed}">
+                                        <c:out value="${card.type.name}" />
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
