@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import etsii.tfg.DungeonRaiders.RoomDungeon.RoomDungeon;
+import etsii.tfg.DungeonRaiders.RoomDungeon.RoomDungeonService;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 
@@ -37,11 +40,13 @@ public class GameController {
 
     private GameService gameService;
     private PlayerService playerService;
+    private RoomDungeonService roomDungeonService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService) {
+    public GameController(GameService gameService, PlayerService playerService, RoomDungeonService roomDungeonService) {
         this.gameService = gameService;
         this.playerService = playerService;
+        this.roomDungeonService = roomDungeonService;
     }
 
     @GetMapping(CREATE_GAME_URL)
@@ -159,6 +164,8 @@ public class GameController {
             Game game = gameService.findGameById(gameId);
             Player activePlayer = playerService.activePlayer();
             List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
+            List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game);
+            modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
             modelMap.addAttribute("game", game);
             modelMap.addAttribute("activePlayer", activePlayer);
             modelMap.addAttribute("otherPlayers", otherPlayers);

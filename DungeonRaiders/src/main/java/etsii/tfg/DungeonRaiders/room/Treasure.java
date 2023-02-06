@@ -18,4 +18,9 @@ public class Treasure extends Room {
 
     @NotNull
     private Integer secondChestCoins;
+
+    @Override
+    public String getType() {
+        return "TREASURE";
+    }
 }

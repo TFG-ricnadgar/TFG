@@ -28,10 +28,10 @@
                                 <div class="col my-auto ">
                                     <c:choose>
                                         <c:when test="${game.maxPlayers == game.players.size()}">
-                                            <img src="/img/PuertaMazmorraCerrada.png" width="100px">
+                                            <img src="/img/rooms/ClosedDungeonDoor.png" width="100px">
                                         </c:when>
                                         <c:when test="${game.maxPlayers != game.players.size()}">
-                                            <img src="/img/PuertaMazmorraAbierta.png" width="100px">
+                                            <img src="/img/rooms/OpenedDungeonDoor.png" width="100px">
                                         </c:when>
                                     </c:choose>
                                 </div>

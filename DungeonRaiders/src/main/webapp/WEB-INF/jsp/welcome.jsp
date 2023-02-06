@@ -9,14 +9,14 @@
             <dungeonRaiders:header />
             <div class="row">
                 <div class="col">
-                    <img src="/img/ExploradoraBarbaro.png" style="max-width: 330px;" />
-                    <img src="/img/Guerrero.png" style="max-width: 200px;" />
+                    <img src="/img/CharactersWelcome2.png" style="max-width: 330px;" />
+                    <img src="/img/CharactersWelcome1.png" style="max-width: 200px;" />
                 </div>
 
                 <div class="col"> </div>
 
                 <div class="col">
-                    <img src="/img/Enemigos.png" style="max-width: 530px;" />
+                    <img src="/img/EnemiesWelcome.png" style="max-width: 530px;" />
                 </div>
             </div>
             <div class="container">

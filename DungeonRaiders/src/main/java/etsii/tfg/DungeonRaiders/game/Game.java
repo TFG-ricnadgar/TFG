@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.Player;
+import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,27 +40,25 @@ public class Game extends BaseEntity {
     private Integer maxPlayers = 5;
 
     @NotNull
-    private Integer turn = 0;
-
-    @NotNull
-    @Min(0)
-    @Max(5)
-    private Integer currentFloor = 0;
+    private Integer turn = -1;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> players;
 
-    @NotNull
-    @Min(0)
-    @Max(5)
-    private Integer currentRoom = 0;
+    public Integer getActualFloor() {
+        return Math.floorDiv(this.turn, DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT);
+    }
+
+    public Integer getActualRoomInFloor() {
+        return this.turn % DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT;
+    }
 
     public Boolean isActive() {
         return winnerUsername == null;
     }
 
     public Boolean isInLobby() {
-        return turn == 0;
+        return this.turn == -1;
     }
 
     public Boolean isInGame() {

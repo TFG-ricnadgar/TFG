@@ -26,4 +26,9 @@ public class Shop extends Room {
 
     @NotNull
     private ShopItem fifthItem;
+
+    @Override
+    public String getType() {
+        return "SHOP";
+    }
 }

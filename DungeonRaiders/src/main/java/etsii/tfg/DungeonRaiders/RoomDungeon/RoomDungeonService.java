@@ -12,13 +12,10 @@ import org.springframework.stereotype.Service;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.room.Room;
 import etsii.tfg.DungeonRaiders.room.RoomService;
+import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
 
 @Service
 public class RoomDungeonService {
-
-    private static final Integer FLOOR_AMOUNT = 5;
-    private static final Integer ROOMS_PER_FLOOR_AMOUNT = 5;
-    private static final Integer MIN_ROOMS_HIDDEN_PER_FLOOR = 2;
 
     private RoomDungeonRepository roomDungeonRepository;
     private RoomService roomService;
@@ -34,12 +31,13 @@ public class RoomDungeonService {
         List<Room> normalRooms = roomService.findAllNormalRooms();
         List<RoomDungeon> dungeon = new ArrayList<>();
         List<Room> finalBossRooms = roomService.findAllFinalBossRooms();
-        for (int i = 0; i < FLOOR_AMOUNT; i++) {
+        for (int i = 0; i < DungeonRaiderConstants.FLOOR_AMOUNT; i++) {
             List<Integer> hiddenRooms = randomListOfHiddenRoomsInFloor();
-            for (int j = 0; j < ROOMS_PER_FLOOR_AMOUNT; j++) {
+            for (int j = 0; j < DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT; j++) {
                 Boolean isHidden = hiddenRooms.contains(j);
 
-                if (j == ROOMS_PER_FLOOR_AMOUNT - 1 && i == FLOOR_AMOUNT - 1) {
+                if (j == DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT - 1
+                        && i == DungeonRaiderConstants.FLOOR_AMOUNT - 1) {
                     Room randomFinalBoss = finalBossRooms.get(random.nextInt(finalBossRooms.size()));
                     dungeon.add(new RoomDungeon(game, randomFinalBoss, isHidden, i, j));
                 } else {
@@ -58,12 +56,17 @@ public class RoomDungeonService {
     }
 
     private List<Integer> randomListOfHiddenRoomsInFloor() {
-        List<Integer> hiddenRooms = IntStream.range(0, ROOMS_PER_FLOOR_AMOUNT).boxed().collect(Collectors.toList());
+        List<Integer> hiddenRooms = IntStream.range(0, DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT).boxed()
+                .collect(Collectors.toList());
         Random random = new Random();
-        Integer amountOfHiddenRoomsInFloor = MIN_ROOMS_HIDDEN_PER_FLOOR + random.nextInt(3);
+        Integer amountOfHiddenRoomsInFloor = DungeonRaiderConstants.MIN_ROOMS_HIDDEN_PER_FLOOR + random.nextInt(3);
         for (int i = 0; i < amountOfHiddenRoomsInFloor; i++) {
             hiddenRooms.remove(random.nextInt(hiddenRooms.size()));
         }
         return hiddenRooms;
+    }
+
+    public List<RoomDungeon> actualFloor(Game game) {
+        return roomDungeonRepository.findAllByGameAndFloor(game.getId(), game.getActualFloor());
     }
 }

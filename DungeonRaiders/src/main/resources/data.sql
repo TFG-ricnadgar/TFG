@@ -6,10 +6,10 @@ INSERT INTO users(username,password) VALUES('user4','$2a$10$cwslzAkqoZgLsc0h5pEx
 INSERT INTO users(username,password) VALUES('user5','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
 
 --Traps
-INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ATRAPAMONEDAS','TRAP',1,1,2,2,1,1);
-INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('CALDERO DE LAVA','TRAP',0,1,2,3,1,1);
-INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('TRAMPA DE PINCHOS','TRAP',1,1,1,2,0,0);
-INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ROCA GIGANTE','TRAP',0,1,2,2,0,0);
+INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ATRAPAMONEDAS','TRAP',-1,-1,-2,-2,1,1);
+INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('CALDERO DE LAVA','TRAP',0,-1,-2,-3,1,1);
+INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('TRAMPA DE PINCHOS','TRAP',-1,-1,-1,-2,0,0);
+INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ROCA GIGANTE','TRAP',0,-1,-2,-2,0,0);
 --Enemies
 INSERT INTO rooms(name,room_type,health_three,health_four,health_five,damage) VALUES('DRAGÓN','ENEMY',14,18,23,3);
 INSERT INTO rooms(name,room_type,health_three,health_four,health_five,damage) VALUES('DRAGÓN','ENEMY',14,18,23,3);

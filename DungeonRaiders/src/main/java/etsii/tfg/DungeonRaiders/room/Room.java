@@ -10,17 +10,17 @@ import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "rooms")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "room_type", discriminatorType = DiscriminatorType.STRING)
-public class Room extends BaseEntity {
+public abstract class Room extends BaseEntity {
 
     @NotNull
     private String name;
+
+    public abstract String getType();
 
 }

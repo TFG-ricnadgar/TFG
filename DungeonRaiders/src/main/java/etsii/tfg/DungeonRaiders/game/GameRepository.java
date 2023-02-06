@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GameRepository extends CrudRepository<Game, Integer> {
 
-    @Query("SELECT g FROM Game g WHERE g.turn = 0 ")
+    @Query("SELECT g FROM Game g WHERE g.turn = -1 ")
     List<Game> findAllInLobbyGames();
 
 }

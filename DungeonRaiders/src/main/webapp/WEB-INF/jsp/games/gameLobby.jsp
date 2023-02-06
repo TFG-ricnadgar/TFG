@@ -31,7 +31,7 @@
                     <dungeonRaiders:lobbyUser name="${players[2].user.username}" img="${players[2].character.image}" />
                 </div>
                 <div class="col d-flex justify-content-center">
-                    <img src="/img/Mesa.png">
+                    <img src="/img/DungeonTable.png">
                 </div>
                 <div class="col d-flex justify-content-center">
                     <dungeonRaiders:lobbyUser name="${players[3].user.username}" img="${players[3].character.image}" />

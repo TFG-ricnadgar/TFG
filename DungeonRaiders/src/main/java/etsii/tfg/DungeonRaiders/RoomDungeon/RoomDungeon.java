@@ -10,7 +10,11 @@ import javax.validation.constraints.NotNull;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.room.Room;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 public class RoomDungeon extends BaseEntity {
 
@@ -34,6 +38,9 @@ public class RoomDungeon extends BaseEntity {
     @Min(0)
     @Max(5)
     private Integer floor;
+
+    public RoomDungeon() {
+    }
 
     public RoomDungeon(Game game, Room room, Boolean isHidden, Integer position, Integer floor) {
         this.game = game;

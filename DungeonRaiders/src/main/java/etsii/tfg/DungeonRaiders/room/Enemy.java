@@ -24,4 +24,29 @@ public class Enemy extends Room {
 
     @NotNull
     private Integer damage;
+
+    @Override
+    public String getType() {
+        return "ENEMY";
+    }
+
+    public Integer getHealth(int playersAmount) {
+        Integer health = 0;
+        switch (playersAmount) {
+            case 3:
+                health = this.healthThree;
+                break;
+            case 4:
+                health = this.healthFour;
+                break;
+            case 5:
+                health = this.healthFive;
+                break;
+            default:
+                health = 99;
+                break;
+        }
+        return health;
+
+    }
 }

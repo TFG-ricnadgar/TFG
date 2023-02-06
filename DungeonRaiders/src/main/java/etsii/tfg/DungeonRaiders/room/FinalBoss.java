@@ -33,4 +33,29 @@ public class FinalBoss extends Room {
 
     @NotNull
     private Integer topCardCoinReward;
+
+    @Override
+    public String getType() {
+
+        return "FINAL_BOSS";
+    }
+
+    public Integer getHealth(int playersAmount) {
+        Integer health = 0;
+        switch (playersAmount) {
+            case 3:
+                health = this.healthThree;
+                break;
+            case 4:
+                health = this.healthFour;
+                break;
+            case 5:
+                health = this.healthFive;
+                break;
+            default:
+                health = 99;
+                break;
+        }
+        return health;
+    }
 }

@@ -13,6 +13,7 @@ import lombok.Setter;
 @DiscriminatorValue("TRAP")
 public class Trap extends Room {
 
+    @NotNull
     private Integer valueTwo;
 
     @NotNull
@@ -29,4 +30,9 @@ public class Trap extends Room {
 
     @NotNull
     private TrapDamage damageType;
+
+    @Override
+    public String getType() {
+        return "TRAP";
+    }
 }

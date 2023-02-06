@@ -42,7 +42,7 @@
 
                                     <div class="row">
                                         <div class="col">
-                                            <img src="/img/Antorcha.png" width="50px">
+                                            <img src="/img/icons/CrystalBall.png" width="50px">
                                         </div>
                                         <div class="col-8">
                                             <button type="submit" class="btn btn-lg btn-primary btn-block"
@@ -51,7 +51,7 @@
                                             </button>
                                         </div>
                                         <div class="col">
-                                            <img src="/img/Antorcha.png" width="50px">
+                                            <img src="/img/icons/CrystalBall.png" width="50px">
                                         </div>
                                     </div>
                                 </form:form>

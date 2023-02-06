@@ -74,7 +74,7 @@ public class PlayerService {
     }
 
     public List<Player> otherPlayersInGame(Game game, Player activePlayer) {
-        List<Player> otherPlayers = game.getPlayers();
+        List<Player> otherPlayers = new ArrayList<>(game.getPlayers());
         otherPlayers.remove(activePlayer);
         return otherPlayers;
     }

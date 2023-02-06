@@ -78,7 +78,7 @@ public class GameService {
     }
 
     public void startGame(Game game) {
-        game.setTurn(1);
+        game.setTurn(0);
         cardService.givePlayersStartingGameHand(game.getPlayers());
         roomDungeonService.generateDungeon(game);
     }
