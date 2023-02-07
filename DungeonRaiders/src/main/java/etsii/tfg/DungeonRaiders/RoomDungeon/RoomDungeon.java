@@ -1,4 +1,4 @@
-package etsii.tfg.DungeonRaiders.RoomDungeon;
+package etsii.tfg.DungeonRaiders.roomDungeon;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

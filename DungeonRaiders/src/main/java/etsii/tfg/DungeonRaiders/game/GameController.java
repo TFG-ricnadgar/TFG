@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import etsii.tfg.DungeonRaiders.RoomDungeon.RoomDungeon;
-import etsii.tfg.DungeonRaiders.RoomDungeon.RoomDungeonService;
+import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
+import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
+import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 
@@ -37,16 +39,20 @@ public class GameController {
     private static final String PLAYING_GAME_URL = "/{gameId}/playing";
     private static final String PLAYING_GAME_BASE_URL = "/playing";
     private static final String PLAYING_GAME_VIEW = "games/gamePlaying";
+    private static final String PLAY_CARD_GAME_URL = "/{gameId}/card/{cardId}/play";
 
     private GameService gameService;
     private PlayerService playerService;
     private RoomDungeonService roomDungeonService;
+    private CardService cardService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService, RoomDungeonService roomDungeonService) {
+    public GameController(GameService gameService, PlayerService playerService, RoomDungeonService roomDungeonService,
+            CardService cardService) {
         this.gameService = gameService;
         this.playerService = playerService;
         this.roomDungeonService = roomDungeonService;
+        this.cardService = cardService;
     }
 
     @GetMapping(CREATE_GAME_URL)
@@ -175,6 +181,18 @@ public class GameController {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
 
+    }
+
+    @GetMapping(PLAY_CARD_GAME_URL)
+    public String playCard(@PathVariable("gameId") int gameId, @PathVariable("cardId") int cardId) {
+        try {
+            Game game = gameService.findGameById(gameId);
+            Card card = cardService.findCardById(cardId);
+            gameService.playCard(game, card);
+            return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
+        } catch (NoSuchElementException e) {
+            return REDIRECT_GAME_BASE + LIST_GAME_URL;
+        }
     }
 
 }

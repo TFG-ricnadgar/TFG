@@ -1,9 +1,16 @@
 package etsii.tfg.DungeonRaiders.room;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardType;
+import etsii.tfg.DungeonRaiders.player.Player;
+import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,5 +55,29 @@ public class Enemy extends Room {
         }
         return health;
 
+    }
+
+    @Override
+    public void effect(List<Card> cardsPlayedThisTurn, PlayerService playerService) {
+        Integer totalDamage = 0;
+        Integer lowestValue = 99;
+        List<Player> playersWithLowestValues = new ArrayList<Player>();
+        for (Card card : cardsPlayedThisTurn) {
+            Integer cardValue = card.getType().getValue();
+            totalDamage += cardValue;
+            if (cardValue < lowestValue) {
+                playersWithLowestValues.add(card.getPlayer());
+                lowestValue = cardValue;
+            } else if (cardValue == lowestValue) {
+                playersWithLowestValues.clear();
+                playersWithLowestValues.add(card.getPlayer());
+            }
+        }
+        if (this.getHealth(cardsPlayedThisTurn.size()) > totalDamage) {
+            for (Player player : playersWithLowestValues) {
+                player.setWounds(player.getWounds() + this.getDamage());
+                playerService.save(player);
+            }
+        }
     }
 }

@@ -1,10 +1,14 @@
 package etsii.tfg.DungeonRaiders.room;
 
+import java.util.List;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
+import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardType;
+import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,5 +61,11 @@ public class FinalBoss extends Room {
                 break;
         }
         return health;
+    }
+
+    @Override
+    public void effect(List<Card> cardsPlayedThisTurn, PlayerService playerService) {
+        // TODO Auto-generated method stub
+
     }
 }

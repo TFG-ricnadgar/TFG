@@ -1,4 +1,4 @@
-package etsii.tfg.DungeonRaiders.RoomDungeon;
+package etsii.tfg.DungeonRaiders.roomDungeon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,5 +68,9 @@ public class RoomDungeonService {
 
     public List<RoomDungeon> actualFloor(Game game) {
         return roomDungeonRepository.findAllByGameAndFloor(game.getId(), game.getActualFloor());
+    }
+
+    public Room getExactRoomInGame(Integer actualRoomInFloor, Integer actualFloor, Integer gameId) {
+        return roomDungeonRepository.getExactRoomInGame(actualRoomInFloor, actualFloor, gameId);
     }
 }

@@ -22,8 +22,8 @@
 
                 <div class="col d-flex justify-content-center">
                     <c:forEach items="${otherPlayers}" var="player">
-                        <div class="card" style="background-color:#c4b3a2;margin:10px;width:14rem">
-                            <div class="row">
+                        <div class="card" style="background-color:#c4b3a2;margin:10px;width:17rem">
+                            <div class="row text-center">
                                 <div class="col-md-3 mx-auto my-auto ">
                                     <img src="${player.character.image}" width="50px" />
                                 </div>
@@ -32,23 +32,23 @@
                                 </div>
                             </div>
                             <div class="row text-center">
-                                <div class="col-md-6 my-auto ">
+                                <div class="col-sm-5 mx-auto my-auto ">
                                     <img src="/img/icons/Coin.png" width="35px" />
                                     <c:out value="${player.coins}" />
                                 </div>
-                                <div class="col-md-5 my-auto">
+                                <div class="col-sm-5 mx-auto my-auto">
                                     <img src="/img/icons/Wound.png" width="35px" />
                                     <c:out value="${player.wounds}" />
                                 </div>
                             </div>
-                            <div class="row text-center">
-                                <div class="col-sm-8" style="padding-right: 0px;">
+                            <div class="row text-center ">
+                                <div class="col-sm-6" style="padding-right: 0px;">
                                     Cartas jugadas :
                                 </div>
-                                <div class="col-md-4" style="padding-left: 0px;">
+                                <div class="col-sm-6" style="padding-left: 0px;">
                                     <c:forEach items="${player.cards}" var="card">
-                                        <c:if test="${card.isUsed}">
-                                            <c:out value="${card.type.name}" />
+                                        <c:if test="${card.isUsed && !card.isRecentlyUsed}">
+                                            <img src="${card.type.image}" width="25px" />
                                         </c:if>
                                     </c:forEach>
                                 </div>
@@ -62,13 +62,15 @@
                         <div class="card text-center"
                             style="background-color:#96aecf ; border-color: #415d8a; border-width: 0.15em;width: 18rem;">
                             <c:choose>
-                                <c:when test="${dungeonRoom.isHidden}">
+                                <c:when
+                                    test="${dungeonRoom.isHidden && game.getActualRoomInFloor() < dungeonRoom.position}">
                                     <h3>
                                         HABITACIÓN OCULTA
                                     </h3>
                                     <img class="card-img" src="/img/rooms/OpenedDungeonDoor.png" />
                                 </c:when>
-                                <c:when test="${!dungeonRoom.isHidden}">
+                                <c:when
+                                    test="${!dungeonRoom.isHidden || game.getActualRoomInFloor() >= dungeonRoom.position}">
                                     <h3>
                                         <c:out value="${dungeonRoom.room.name}" />
                                     </h3>
@@ -103,15 +105,21 @@
                                             </div>
                                         </c:when>
                                         <c:when test="${dungeonRoom.room.getType() == 'TREASURE'}">
+
                                             <img class="card-img-top" src="/img/rooms/Chest.png" />
-                                            Cofre grande =
-                                            <c:out value="${player.coins}" />
-                                            <c:out value="${dungeonRoom.room.firstChestCoins}" />
+                                            <div class="mx-auto my-auto">
+                                                <h5>Cofre grande
+                                                    <img src="/img/icons/Coin.png" width="35px" />
+                                                    <c:out value="${dungeonRoom.room.firstChestCoins}" />
+                                                </h5>
+                                            </div>
                                             <c:if test="${dungeonRoom.room.secondChestCoins != 0}">
-                                                <br>
-                                                Cofre pequeño =
-                                                <c:out value="${player.coins}" />
-                                                <c:out value="${dungeonRoom.room.secondChestCoins}" />
+                                                <div class="mx-auto my-auto">
+                                                    <h5>Cofre pequeño
+                                                        <img src="/img/icons/Coin.png" width="35px" />
+                                                        <c:out value="${dungeonRoom.room.secondChestCoins}" />
+                                                    </h5>
+                                                </div>
                                             </c:if>
                                         </c:when>
                                         <c:when test="${dungeonRoom.room.getType() == 'TRAP'}">
@@ -180,8 +188,8 @@
 
                 <div class="col d-flex justify-content-center">
 
-                    <div class="card" style="background-color:#c2ac98;margin:10px;width:25rem;font-size:25px">
-                        <div class="row">
+                    <div class="card" style="background-color:#c2ac98;margin:10px;width:27rem;font-size:25px">
+                        <div class="row text-center">
                             <div class="col-md-2 mx-auto  my-auto ">
                                 <img src="${activePlayer.character.image}" width="70px" />
                             </div>
@@ -190,23 +198,23 @@
                             </div>
                         </div>
                         <div class="row text-center">
-                            <div class="col-md-6 my-auto ">
+                            <div class="col-sm-5 my-auto mx-auto ">
                                 <img src="/img/icons/Coin.png" width="50px" />
                                 <c:out value="${activePlayer.coins}" />
                             </div>
-                            <div class="col-md-5 my-auto">
+                            <div class="col-sm-5 my-auto mx-auto">
                                 <img src="/img/icons/Wound.png" width="50px" />
                                 <c:out value="${activePlayer.wounds}" />
                             </div>
                         </div>
                         <div class="row text-center">
-                            <div class="col-sm-8" style="padding-right: 0px;">
+                            <div class="col-sm-7" style="padding-right: 0px;">
                                 Cartas jugadas :
                             </div>
-                            <div class="col-sm-4" style="padding-left: 0px;">
+                            <div class="col-sm-5" style="padding-left: 0px;">
                                 <c:forEach items="${activePlayer.cards}" var="card">
-                                    <c:if test="${card.isUsed}">
-                                        <img src="${card.type.image}" width="40px" />
+                                    <c:if test="${card.isUsed && !card.isRecentlyUsed}">
+                                        <img src="${card.type.image}" width="30px" />
                                     </c:if>
                                 </c:forEach>
                             </div>

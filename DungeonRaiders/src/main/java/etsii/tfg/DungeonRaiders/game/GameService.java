@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import etsii.tfg.DungeonRaiders.RoomDungeon.RoomDungeonService;
+import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
+import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import etsii.tfg.DungeonRaiders.user.UserService;
+import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
 
 @Service
 public class GameService {
@@ -81,6 +83,37 @@ public class GameService {
         game.setTurn(0);
         cardService.givePlayersStartingGameHand(game.getPlayers());
         roomDungeonService.generateDungeon(game);
+    }
+
+    public void playCard(Game game, Card card) {
+        Boolean cardNotPlayedInTurn = cardService.findCardPlayedInTurn(card.getPlayer().getId()) == null;
+        if (game.isInGame() && !card.getIsUsed() && cardNotPlayedInTurn) {
+            card.setIsUsed(true);
+            card.setIsRecentlyUsed(true);
+            cardService.save(card);
+
+            List<Card> cardsPlayedThisTurn = cardService.findAllCardsPlayedThisTurn(game.getId());
+            if (cardsPlayedThisTurn.size() >= game.getPlayers().size()) {
+                cardService.handleCardsPlayedThisTurn(game, cardsPlayedThisTurn);
+                newTurn(game);
+            }
+        }
+    }
+
+    public void newTurn(Game game) {
+        Integer oldFloor = game.getActualFloor();
+        game.setTurn(game.getTurn() + 1);
+        if (game.getActualFloor() >= DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT) {
+            handleEndOfGame();
+        } else if (oldFloor == game.getActualFloor()) {
+            cardService.newRoomHand(game);
+        } else {
+            cardService.newFloorHand(game);
+        }
+    }
+
+    private void handleEndOfGame() {
+        // TODO
     }
 
 }

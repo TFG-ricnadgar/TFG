@@ -39,7 +39,7 @@ public class PlayerService {
         save(newPlayer);
     }
 
-    private void save(Player player) {
+    public void save(Player player) {
         playerRepository.save(player);
     }
 
