@@ -55,4 +55,8 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
+    public void setUsername(String username) {
+        this.user.setUsername(username);
+    }
+
 }

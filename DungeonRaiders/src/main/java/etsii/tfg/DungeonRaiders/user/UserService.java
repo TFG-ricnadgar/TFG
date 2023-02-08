@@ -37,18 +37,13 @@ public class UserService {
         return user;
     }
 
-    public Boolean checkPasswordChange(String oldPassword, String newPassword, User user) {
-        Boolean passwordChangeWanted = !oldPassword.isEmpty() && !newPassword.isEmpty();
-        Boolean passwordChangeError = false;
+    public Boolean checkIncorrectOldPassword(String oldPassword, User authenticatedUser) {
+        Boolean oldPasswordIsIncorrect = true;
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        if (passwordChangeWanted) {
-            if (passwordEncoder.matches(oldPassword, authenticatedUser().getPassword())) {
-                user.setPassword(passwordEncoder.encode(newPassword));
-            } else {
-                passwordChangeError = true;
-            }
+        if (passwordEncoder.matches(oldPassword, authenticatedUser.getPassword())) {
+            oldPasswordIsIncorrect = false;
         }
-        return passwordChangeError;
+        return oldPasswordIsIncorrect;
     }
 
 }

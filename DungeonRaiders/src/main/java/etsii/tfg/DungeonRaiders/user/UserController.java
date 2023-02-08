@@ -6,14 +6,20 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import etsii.tfg.DungeonRaiders.game.Game;
+import etsii.tfg.DungeonRaiders.player.PlayerService;
+import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 
 @RequestMapping("/user")
 @Controller
@@ -26,8 +32,14 @@ public class UserController {
     private static final String UPDATE_USER_URL = "/update";
     private static final String UPDATE_USER_VIEW = "users/updateUserForm";
 
-    @Autowired
     private UserService userService;
+    private PlayerService playerService;
+
+    @Autowired
+    public UserController(UserService userService, PlayerService playerService) {
+        this.userService = userService;
+        this.playerService = playerService;
+    }
 
     @GetMapping(value = REGISTER_USER_URL)
     public String registerGetForm(ModelMap modelMap) {
@@ -52,9 +64,7 @@ public class UserController {
             modelMap.addAttribute("user", user);
             return REGISTER_USER_VIEW;
         } else {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
+            user.setDecryptedPassword(user.getPassword());
             userService.save(user);
             return "redirect:/user" + LOGIN_USER_URL;
 
@@ -74,18 +84,25 @@ public class UserController {
     }
 
     @PostMapping(value = UPDATE_USER_URL)
-    public String updateUserPostForm(ModelMap modelMap, @Valid User user,
+    public String updateUserPostForm(ModelMap modelMap, @Validated(BasicInfo.class) User user,
             @RequestParam(value = "oldPassword") String oldPassword,
-            @RequestParam(value = "newPassword") String newPassword, BindingResult result) {
+            @RequestParam(value = "newPassword") String newPassword, BindingResult result,
+            @AuthenticationPrincipal CustomUserDetails loggedUser) {
 
         User authenticatedUser = userService.authenticatedUser();
 
-        Boolean incorrectOldPassword = userService.checkPasswordChange(oldPassword, newPassword, user);
+        Boolean passwordChangeWanted = !oldPassword.isEmpty() && !newPassword.isEmpty();
+        Boolean incorrectOldPassword = passwordChangeWanted
+                && userService.checkIncorrectOldPassword(oldPassword, authenticatedUser);
+        Boolean incorrectNewPassword = passwordChangeWanted && newPassword.length() < 5;
 
         Boolean newUsernameIsRepeated = !authenticatedUser.getUsername().equals(user.getUsername())
                 && userService.findUserByUsername(user.getUsername()) != null;
 
-        if (result.hasErrors() || incorrectOldPassword || newUsernameIsRepeated) {
+        Game activeUserGame = playerService.activeUserGame();
+        Boolean userInGame = activeUserGame != null;
+
+        if (result.hasErrors() || incorrectOldPassword || incorrectNewPassword || newUsernameIsRepeated || userInGame) {
             List<String> messages = new ArrayList<String>();
             if (incorrectOldPassword) {
                 messages.add("La contraseña antigua no coincide");
@@ -93,13 +110,24 @@ public class UserController {
             if (newUsernameIsRepeated) {
                 messages.add("El nuevo nombre de usuario ya esta siendo utilizado por otra persona");
             }
+            if (userInGame) {
+                messages.add("No puedes modificar tu usuario estando en partida");
+            }
+            if (incorrectNewPassword) {
+                messages.add("La contraseña debe tener un tamaño superior a 5 caracteres");
+            }
             modelMap.addAttribute("user", user);
             modelMap.addAttribute("messages", messages);
             return UPDATE_USER_VIEW;
+        } else {
+            user.setId(authenticatedUser.getId());
+            if (passwordChangeWanted) {
+                user.setDecryptedPassword(newPassword);
+            }
+            loggedUser.setUsername(user.getUsername());
+            userService.save(user);
+            return "redirect:/";
         }
-        user.setId(authenticatedUser.getId());
-        userService.save(user);
-        return "redirect:/";
 
     }
 
