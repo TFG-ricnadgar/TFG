@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
+import etsii.tfg.DungeonRaiders.room.Room;
 import etsii.tfg.DungeonRaiders.user.UserService;
 import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
 
@@ -87,7 +89,13 @@ public class GameService {
 
     public void playCard(Game game, Card card) {
         Boolean cardNotPlayedInTurn = cardService.findCardPlayedInTurn(card.getPlayer().getId()) == null;
-        if (game.isInGame() && !card.getIsUsed() && cardNotPlayedInTurn) {
+        Room roomInPlay = roomDungeonService.getExactRoomInGame(game.getActualRoomInFloor(), game.getActualFloor(),
+                game.getId());
+        Boolean swordWithEnemy = roomInPlay.getType() == "ENEMY" && card.getType() == CardType.sword;
+        Boolean keyWithTreasure = roomInPlay.getType() == "TREASURE" && card.getType() == CardType.key;
+        Boolean cardIsPlayable = swordWithEnemy || keyWithTreasure || card.isBasic();
+
+        if (game.isInGame() && !card.getIsUsed() && cardNotPlayedInTurn && cardIsPlayable) {
             card.setIsUsed(true);
             card.setIsRecentlyUsed(true);
             cardService.save(card);

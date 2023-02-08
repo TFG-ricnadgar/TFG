@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,8 +39,29 @@ public class Shop extends Room {
     }
 
     @Override
-    public void effect(List<Card> cardsPlayedThisTurn, PlayerService playerService) {
-        // TODO Auto-generated method stub
+    public void effect(Game game, List<Card> cardsPlayedThisTurn, PlayerService playerService,
+            CardService cardService) {
+        for (Card card : cardsPlayedThisTurn) {
+            switch (card.getType().getValue()) {
+                case 1:
+                    this.firstItem.buyEffect(card.getPlayer(), playerService, cardService);
+                    break;
+                case 2:
+                    this.secondItem.buyEffect(card.getPlayer(), playerService, cardService);
+                    break;
+                case 3:
+                    this.thirdItem.buyEffect(card.getPlayer(), playerService, cardService);
+                    break;
+                case 4:
+                    this.fourthItem.buyEffect(card.getPlayer(), playerService, cardService);
+                    break;
+                case 5:
+                    this.fifthItem.buyEffect(card.getPlayer(), playerService, cardService);
+                    break;
 
+                default:
+                    break;
+            }
+        }
     }
 }

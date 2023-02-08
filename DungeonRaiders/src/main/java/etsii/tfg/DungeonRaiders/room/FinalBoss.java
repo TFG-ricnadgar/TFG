@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.card.CardType;
+import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
 import lombok.Setter;
@@ -64,7 +66,8 @@ public class FinalBoss extends Room {
     }
 
     @Override
-    public void effect(List<Card> cardsPlayedThisTurn, PlayerService playerService) {
+    public void effect(Game game, List<Card> cardsPlayedThisTurn, PlayerService playerService,
+            CardService cardService) {
         // TODO Auto-generated method stub
 
     }

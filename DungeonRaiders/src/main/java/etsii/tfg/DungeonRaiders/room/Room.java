@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
@@ -27,6 +29,7 @@ public abstract class Room extends BaseEntity {
 
     public abstract String getType();
 
-    public abstract void effect(List<Card> cardsPlayedThisTurn, PlayerService playerService);
+    public abstract void effect(Game game, List<Card> cardsPlayedThisTurn, PlayerService playerService,
+            CardService cardService);
 
 }

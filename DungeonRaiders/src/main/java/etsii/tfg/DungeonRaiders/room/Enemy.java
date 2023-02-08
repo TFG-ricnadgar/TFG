@@ -8,7 +8,8 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
-import etsii.tfg.DungeonRaiders.card.CardType;
+import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
@@ -58,7 +59,8 @@ public class Enemy extends Room {
     }
 
     @Override
-    public void effect(List<Card> cardsPlayedThisTurn, PlayerService playerService) {
+    public void effect(Game game, List<Card> cardsPlayedThisTurn, PlayerService playerService,
+            CardService cardService) {
         Integer totalDamage = 0;
         Integer lowestValue = 99;
         List<Player> playersWithLowestValues = new ArrayList<Player>();
@@ -66,10 +68,10 @@ public class Enemy extends Room {
             Integer cardValue = card.getType().getValue();
             totalDamage += cardValue;
             if (cardValue < lowestValue) {
+                playersWithLowestValues.clear();
                 playersWithLowestValues.add(card.getPlayer());
                 lowestValue = cardValue;
             } else if (cardValue == lowestValue) {
-                playersWithLowestValues.clear();
                 playersWithLowestValues.add(card.getPlayer());
             }
         }

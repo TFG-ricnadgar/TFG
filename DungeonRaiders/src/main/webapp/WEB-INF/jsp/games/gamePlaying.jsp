@@ -7,6 +7,7 @@
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
                     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
                     crossorigin="anonymous">
+                <meta http-equiv="refresh" content="5">
             </head>
 
             <body style="font-family:fantasy; letter-spacing: 1px;">
@@ -62,15 +63,21 @@
                         <div class="card text-center"
                             style="background-color:#96aecf ; border-color: #415d8a; border-width: 0.15em;width: 18rem;">
                             <c:choose>
+                                <c:when test="${game.getActualRoomInFloor() > dungeonRoom.position}">
+                                    <h3>
+                                        HABITACIÓN <br> EXPLORADA
+                                    </h3>
+                                    <img class="card-img" src="/img/rooms/ClosedDungeonDoor.png" />
+                                </c:when>
                                 <c:when
                                     test="${dungeonRoom.isHidden && game.getActualRoomInFloor() < dungeonRoom.position}">
                                     <h3>
-                                        HABITACIÓN OCULTA
+                                        HABITACIÓN <br> OCULTA
                                     </h3>
                                     <img class="card-img" src="/img/rooms/OpenedDungeonDoor.png" />
                                 </c:when>
                                 <c:when
-                                    test="${!dungeonRoom.isHidden || game.getActualRoomInFloor() >= dungeonRoom.position}">
+                                    test="${!dungeonRoom.isHidden || game.getActualRoomInFloor() == dungeonRoom.position}">
                                     <h3>
                                         <c:out value="${dungeonRoom.room.name}" />
                                     </h3>

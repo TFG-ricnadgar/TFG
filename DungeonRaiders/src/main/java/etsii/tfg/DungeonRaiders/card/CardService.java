@@ -77,7 +77,7 @@ public class CardService {
     public void handleCardsPlayedThisTurn(Game game, List<Card> cardsPlayedThisTurn) {
         Room room = roomDungeonService.getExactRoomInGame(game.getActualRoomInFloor(), game.getActualFloor(),
                 game.getId());
-        room.effect(cardsPlayedThisTurn, playerService);
+        room.effect(game, cardsPlayedThisTurn, playerService, this);
     }
 
     public void newRoomHand(Game game) {

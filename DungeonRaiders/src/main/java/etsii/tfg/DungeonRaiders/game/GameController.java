@@ -91,9 +91,17 @@ public class GameController {
 
     @GetMapping(LIST_GAME_URL)
     public String gamesList(ModelMap modelMap) {
-        List<Game> inLobbyGames = gameService.findAllInLobbyGames();
-        modelMap.addAttribute("gamesList", inLobbyGames);
-        return LIST_GAME_VIEW;
+        Game activeUserGame = playerService.activeUserGame();
+        Boolean userInGame = activeUserGame != null;
+        if (userInGame && activeUserGame.isInLobby()) {
+            return REDIRECT_GAME + activeUserGame.getId() + LOBBY_BASE_GAME_URL;
+        } else if (userInGame && activeUserGame.isInGame()) {
+            return REDIRECT_GAME + activeUserGame.getId() + PLAYING_GAME_BASE_URL;
+        } else {
+            List<Game> inLobbyGames = gameService.findAllInLobbyGames();
+            modelMap.addAttribute("gamesList", inLobbyGames);
+            return LIST_GAME_VIEW;
+        }
     }
 
     @GetMapping(LOBBY_GAME_URL)

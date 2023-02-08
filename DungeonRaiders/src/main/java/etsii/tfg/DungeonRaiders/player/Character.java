@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardType;
 import lombok.Getter;
 
