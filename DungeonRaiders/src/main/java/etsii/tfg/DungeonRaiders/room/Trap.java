@@ -36,7 +36,7 @@ public class Trap extends Room {
     private TrapTarget target;
 
     @NotNull
-    private TrapDamage damageType;
+    private DamageType damageType;
 
     @Override
     public String getType() {
