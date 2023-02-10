@@ -40,6 +40,7 @@ public class GameController {
     private static final String PLAYING_GAME_BASE_URL = "/playing";
     private static final String PLAYING_GAME_VIEW = "games/gamePlaying";
     private static final String PLAY_CARD_GAME_URL = "/{gameId}/card/{cardId}/play";
+    private static final String PLAY_TORCH_CARD_GAME_URL = "/{gameId}/room/{roomDungeonId}/reveal";
 
     private GameService gameService;
     private PlayerService playerService;
@@ -178,7 +179,7 @@ public class GameController {
             Game game = gameService.findGameById(gameId);
             Player activePlayer = playerService.activePlayer();
             List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
-            List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game);
+            List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game, activePlayer);
             modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
             modelMap.addAttribute("game", game);
             modelMap.addAttribute("activePlayer", activePlayer);
@@ -197,6 +198,19 @@ public class GameController {
             Game game = gameService.findGameById(gameId);
             Card card = cardService.findCardById(cardId);
             gameService.playCard(game, card);
+            return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
+        } catch (NoSuchElementException e) {
+            return REDIRECT_GAME_BASE + LIST_GAME_URL;
+        }
+    }
+
+    @GetMapping(PLAY_TORCH_CARD_GAME_URL)
+    public String playTorchCard(@PathVariable("gameId") int gameId,
+            @PathVariable("roomDungeonId") int roomDungeonId) {
+        try {
+            Game game = gameService.findGameById(gameId);
+            RoomDungeon roomDungeon = roomDungeonService.findRoomDungeonById(roomDungeonId);
+            gameService.playTorchCard(game, roomDungeon);
             return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
         } catch (NoSuchElementException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;

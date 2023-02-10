@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import etsii.tfg.DungeonRaiders.game.Game;
+import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.room.Room;
 import etsii.tfg.DungeonRaiders.room.RoomService;
+import etsii.tfg.DungeonRaiders.torchRoom.TorchRoomService;
 import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
 
 @Service
@@ -19,11 +21,14 @@ public class RoomDungeonService {
 
     private RoomDungeonRepository roomDungeonRepository;
     private RoomService roomService;
+    private TorchRoomService torchRoomService;
 
     @Autowired
-    public RoomDungeonService(RoomDungeonRepository roomDungeonRepository, RoomService roomService) {
+    public RoomDungeonService(RoomDungeonRepository roomDungeonRepository, RoomService roomService,
+            TorchRoomService torchRoomService) {
         this.roomDungeonRepository = roomDungeonRepository;
         this.roomService = roomService;
+        this.torchRoomService = torchRoomService;
     }
 
     public void generateDungeon(Game game) {
@@ -66,11 +71,25 @@ public class RoomDungeonService {
         return hiddenRooms;
     }
 
-    public List<RoomDungeon> actualFloor(Game game) {
-        return roomDungeonRepository.findAllByGameAndFloor(game.getId(), game.getActualFloor());
+    public List<RoomDungeon> actualFloor(Game game, Player player) {
+        List<RoomDungeon> actualFloor = List
+                .copyOf(roomDungeonRepository.findAllByGameAndFloor(game.getId(), game.getActualFloor()));
+        List<RoomDungeon> revealedRooms = torchRoomService.findAllRoomDungeonByPlayerInFloor(game.getActualFloor(),
+                player);
+        for (RoomDungeon room : actualFloor) {
+            if (room.getIsHidden() && revealedRooms.contains(room)) {
+                room.setIsHidden(false);
+            }
+        }
+
+        return actualFloor;
     }
 
     public Room getExactRoomInGame(Integer actualRoomInFloor, Integer actualFloor, Integer gameId) {
         return roomDungeonRepository.getExactRoomInGame(actualRoomInFloor, actualFloor, gameId);
+    }
+
+    public RoomDungeon findRoomDungeonById(int roomDungeonId) {
+        return roomDungeonRepository.findById(roomDungeonId).get();
     }
 }

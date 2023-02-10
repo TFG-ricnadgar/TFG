@@ -5,12 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
 import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
+import etsii.tfg.DungeonRaiders.torchRoom.TorchRoomService;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
+import etsii.tfg.DungeonRaiders.room.FinalBoss;
 import etsii.tfg.DungeonRaiders.room.Room;
 import etsii.tfg.DungeonRaiders.user.UserService;
 import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
@@ -23,15 +26,18 @@ public class GameService {
     private PlayerService playerService;
     private CardService cardService;
     private RoomDungeonService roomDungeonService;
+    private TorchRoomService torchRoomService;
 
     @Autowired
     public GameService(GameRepository gameRepository, UserService userService,
-            PlayerService playerService, CardService cardService, RoomDungeonService roomDungeonService) {
+            PlayerService playerService, CardService cardService, RoomDungeonService roomDungeonService,
+            TorchRoomService torchRoomService) {
         this.gameRepository = gameRepository;
         this.userService = userService;
         this.playerService = playerService;
         this.cardService = cardService;
         this.roomDungeonService = roomDungeonService;
+        this.torchRoomService = torchRoomService;
     }
 
     public List<Game> findAllInLobbyGames() {
@@ -93,9 +99,13 @@ public class GameService {
                 game.getId());
         Boolean swordWithEnemy = roomInPlay.getType() == "ENEMY" && card.getType() == CardType.sword;
         Boolean keyWithTreasure = roomInPlay.getType() == "TREASURE" && card.getType() == CardType.key;
-        Boolean cardIsPlayable = swordWithEnemy || keyWithTreasure || card.isBasic();
+        Boolean escapeCardWithFinalBoss = roomInPlay.getType() == "FINAL_BOSS"
+                && ((FinalBoss) roomInPlay).getEscapeCard() == card.getType();
+        Boolean cardIsPlayableInRoom = swordWithEnemy || keyWithTreasure || escapeCardWithFinalBoss || card.isBasic();
+        Boolean cardIsOwnedByPlayer = card.getPlayer().equals(playerService.activePlayer());
 
-        if (game.isInGame() && !card.getIsUsed() && cardNotPlayedInTurn && cardIsPlayable) {
+        if (game.isInGame() && !card.getIsUsed() && cardIsOwnedByPlayer && cardNotPlayedInTurn
+                && cardIsPlayableInRoom) {
             card.setIsUsed(true);
             card.setIsRecentlyUsed(true);
             cardService.save(card);
@@ -108,11 +118,22 @@ public class GameService {
         }
     }
 
+    public void playTorchCard(Game game, RoomDungeon roomDungeon) {
+        Player activePlayer = playerService.activePlayer();
+        Boolean roomIsHidden = roomDungeon.getIsHidden() && game.getActualFloor() == roomDungeon.getFloor()
+                && game.getActualRoomInFloor() < roomDungeon.getPosition();
+        if (game.isInGame() && roomIsHidden && activePlayer.hasATorch()) {
+            Card torch = activePlayer.getCards().stream().filter(c -> c.getType() == CardType.torch).findAny().get();
+            torchRoomService.revealRoom(roomDungeon, activePlayer);
+            cardService.deleteCardById(torch.getId());
+        }
+    }
+
     public void newTurn(Game game) {
         Integer oldFloor = game.getActualFloor();
         game.setTurn(game.getTurn() + 1);
         if (game.getActualFloor() >= DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT) {
-            handleEndOfGame();
+            handleEndOfGame(game);
         } else if (oldFloor == game.getActualFloor()) {
             cardService.newRoomHand(game);
         } else {
@@ -120,8 +141,8 @@ public class GameService {
         }
     }
 
-    private void handleEndOfGame() {
-        // TODO
+    private void handleEndOfGame(Game game) {
+
     }
 
 }

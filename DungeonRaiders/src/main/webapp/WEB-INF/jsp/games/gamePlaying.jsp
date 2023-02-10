@@ -75,6 +75,17 @@
                                         HABITACIÓN <br> OCULTA
                                     </h3>
                                     <img class="card-img" src="/img/rooms/OpenedDungeonDoor.png" />
+
+                                    <c:if test="${activePlayer.hasATorch()}">
+                                        <a href="room/${dungeonRoom.id}/reveal">
+                                            <button type="button" class="btn btn-lg btn-primary btn-block"
+                                                style="background-color: #e86e02; border-color: #9b5c26;">
+                                                <img src="/img/icons/Torch.png" width="35px" />
+                                                Revelar
+                                                <img src="/img/icons/Torch.png" width="35px" />
+                                            </button>
+                                        </a>
+                                    </c:if>
                                 </c:when>
                                 <c:when
                                     test="${!dungeonRoom.isHidden || game.getActualRoomInFloor() == dungeonRoom.position}">
@@ -181,12 +192,14 @@
                         <c:if test="${!card.isUsed}">
                             <div class="card text-center" style="background-color:#f3e1c0;margin:5px;">
                                 <img src="${card.type.image}" width="70px" />
-                                <a href="card/${card.id}/play">
-                                    <button type="button" class="btn btn-lg btn-primary btn-block"
-                                        style="background-color: #e86e02; border-color: #9b5c26;">
-                                        Jugar
-                                    </button>
-                                </a>
+                                <c:if test="${card.type.isPlayable()}">
+                                    <a href="card/${card.id}/play">
+                                        <button type="button" class="btn btn-lg btn-primary btn-block"
+                                            style="background-color: #e86e02; border-color: #9b5c26;">
+                                            Jugar
+                                        </button>
+                                    </a>
+                                </c:if>
                             </div>
 
                         </c:if>

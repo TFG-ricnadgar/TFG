@@ -27,7 +27,7 @@ public class CardService {
         this.playerService = playerService;
     }
 
-    private void deleteCard(Card card) {
+    public void deleteCard(Card card) {
         cardRepository.delete(card);
     }
 
@@ -103,6 +103,10 @@ public class CardService {
                 deleteCard(card);
             }
         }
+    }
+
+    public void deleteCardById(Integer id) {
+        cardRepository.deleteCardById(id);
     }
 
 }

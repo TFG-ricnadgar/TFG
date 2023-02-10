@@ -15,6 +15,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.user.User;
@@ -50,4 +51,8 @@ public class Player extends BaseEntity {
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Card> cards;
+
+    public Boolean hasATorch() {
+        return this.cards.stream().anyMatch(c -> c.getType() == CardType.torch);
+    }
 }

@@ -23,4 +23,8 @@ public enum CardType {
         this.value = value;
         this.image = image;
     }
+
+    public Boolean isPlayable() {
+        return this != torch;
+    }
 }
