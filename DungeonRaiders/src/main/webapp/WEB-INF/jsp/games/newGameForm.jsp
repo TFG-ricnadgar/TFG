@@ -19,17 +19,6 @@
                         <div class="row justify-content-center">
                             <div class="col-sm-8 text-center" style="font-family:fantasy; letter-spacing: 1px;">
                                 <h1 class="display-3" style="color: #e86e02;">CREAR PARTIDA</h1>
-
-                                <c:if test="${messages != null}">
-                                    <c:forEach items="${messages}" var="message">
-                                        <div class="alert alert-danger" role="alert">
-                                            ${message}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    </c:forEach>
-                                </c:if>
                                 <form:form modelAttribute="game" class="form-vertical">
                                     <dungeonRaiders:inputField name="name" label="Nombre de la partida" />
                                     <h4>Maximo de jugadores en partida</h4>

@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Length;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
+import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +26,7 @@ import lombok.Setter;
 @Table(name = "games")
 public class Game extends BaseEntity {
 
-    @Length(min = 3, max = 20)
+    @Length(min = 3, max = 20, message = "El nombre de la partida debe tener mas de 3 caracteres y menos de 15", groups = BasicInfo.class)
     @NotBlank
     private String name;
 
@@ -35,9 +36,9 @@ public class Game extends BaseEntity {
     private String winnerUsername;
 
     @NotNull
-    @Min(3)
-    @Max(5)
-    private Integer maxPlayers = 5;
+    @Min(value = 3, groups = BasicInfo.class)
+    @Max(value = 5, groups = BasicInfo.class)
+    private Integer maxPlayers;
 
     @NotNull
     private Integer turn = -1;

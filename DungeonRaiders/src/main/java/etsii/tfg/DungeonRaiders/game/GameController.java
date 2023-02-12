@@ -1,12 +1,13 @@
 package etsii.tfg.DungeonRaiders.game;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
 import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
+import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.player.Player;
@@ -73,15 +75,8 @@ public class GameController {
     }
 
     @PostMapping(CREATE_GAME_URL)
-    public String postNewGameForm(ModelMap modelMap, Game game) {
-        Boolean gameNameShortOrLong = game.getName().length() > 20 || game.getName().length() < 3;
-        if (gameNameShortOrLong) {
-            List<String> messages = new ArrayList<String>();
-
-            if (gameNameShortOrLong) {
-                messages.add("El nombre de la partida debe tener mas de 3 caracteres y menos de 15");
-            }
-            modelMap.addAttribute("messages", messages);
+    public String postNewGameForm(ModelMap modelMap, @Validated(BasicInfo.class) Game game, BindingResult result) {
+        if (result.hasErrors()) {
             modelMap.addAttribute("game", game);
             return CREATE_GAME_VIEW;
         } else {
