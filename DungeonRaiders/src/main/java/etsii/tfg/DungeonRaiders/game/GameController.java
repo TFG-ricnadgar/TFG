@@ -203,9 +203,8 @@ public class GameController {
     public String playTorchCard(@PathVariable("gameId") int gameId,
             @PathVariable("roomDungeonId") int roomDungeonId) {
         try {
-            Game game = gameService.findGameById(gameId);
             RoomDungeon roomDungeon = roomDungeonService.findRoomDungeonById(roomDungeonId);
-            gameService.playTorchCard(game, roomDungeon);
+            gameService.playTorchCard(roomDungeon);
             return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
         } catch (NoSuchElementException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;

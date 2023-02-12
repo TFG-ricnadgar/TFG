@@ -94,17 +94,22 @@ public class GameService {
     }
 
     public void playCard(Game game, Card card) {
+        Player activePlayer = playerService.activePlayer();
+
+        Boolean playerInGame = game.equals(activePlayer.getGame());
+
+        Boolean cardIsOwnedByPlayer = card.getPlayer().equals(activePlayer);
         Boolean cardNotPlayedInTurn = cardService.findCardPlayedInTurn(card.getPlayer().getId()) == null;
         Room roomInPlay = roomDungeonService.getExactRoomInGame(game.getActualRoomInFloor(), game.getActualFloor(),
                 game.getId());
+
         Boolean swordWithEnemy = roomInPlay.getType() == "ENEMY" && card.getType() == CardType.sword;
         Boolean keyWithTreasure = roomInPlay.getType() == "TREASURE" && card.getType() == CardType.key;
         Boolean escapeCardWithFinalBoss = roomInPlay.getType() == "FINAL_BOSS"
                 && ((FinalBoss) roomInPlay).getEscapeCard() == card.getType();
         Boolean cardIsPlayableInRoom = swordWithEnemy || keyWithTreasure || escapeCardWithFinalBoss || card.isBasic();
-        Boolean cardIsOwnedByPlayer = card.getPlayer().equals(playerService.activePlayer());
 
-        if (game.isInGame() && !card.getIsUsed() && cardIsOwnedByPlayer && cardNotPlayedInTurn
+        if (playerInGame && game.isInGame() && cardIsOwnedByPlayer && !card.getIsUsed() && cardNotPlayedInTurn
                 && cardIsPlayableInRoom) {
             card.setIsUsed(true);
             card.setIsRecentlyUsed(true);
@@ -118,11 +123,13 @@ public class GameService {
         }
     }
 
-    public void playTorchCard(Game game, RoomDungeon roomDungeon) {
+    public void playTorchCard(RoomDungeon roomDungeon) {
         Player activePlayer = playerService.activePlayer();
+        Game game = roomDungeon.getGame();
+        Boolean playerInGame = game.equals(activePlayer.getGame());
         Boolean roomIsHidden = roomDungeon.getIsHidden() && game.getActualFloor() == roomDungeon.getFloor()
                 && game.getActualRoomInFloor() < roomDungeon.getPosition();
-        if (game.isInGame() && roomIsHidden && activePlayer.hasATorch()) {
+        if (playerInGame && game.isInGame() && roomIsHidden && activePlayer.hasATorch()) {
             Card torch = activePlayer.getCards().stream().filter(c -> c.getType() == CardType.torch).findAny().get();
             torchRoomService.revealRoom(roomDungeon, activePlayer);
             cardService.deleteCardById(torch.getId());
