@@ -1,6 +1,9 @@
 package etsii.tfg.DungeonRaiders.game;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,7 +106,8 @@ public class GameService {
         Room roomInPlay = roomDungeonService.getExactRoomInGame(game.getActualRoomInFloor(), game.getActualFloor(),
                 game.getId());
 
-        Boolean swordWithEnemy = roomInPlay.getType() == "ENEMY" && card.getType() == CardType.sword;
+        Boolean swordWithEnemy = (roomInPlay.getType() == "ENEMY" || roomInPlay.getType() == "FINAL_BOSS")
+                && card.getType() == CardType.sword;
         Boolean keyWithTreasure = roomInPlay.getType() == "TREASURE" && card.getType() == CardType.key;
         Boolean escapeCardWithFinalBoss = roomInPlay.getType() == "FINAL_BOSS"
                 && ((FinalBoss) roomInPlay).getEscapeCard() == card.getType();
@@ -144,7 +148,7 @@ public class GameService {
     public void newTurn(Game game) {
         Integer oldFloor = game.getActualFloor();
         game.setTurn(game.getTurn() + 1);
-        if (game.getActualFloor() >= DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT) {
+        if (game.getActualFloor() >= DungeonRaiderConstants.FLOOR_AMOUNT) {
             handleEndOfGame(game);
         } else if (oldFloor == game.getActualFloor()) {
             cardService.newRoomHand(game);
@@ -154,7 +158,45 @@ public class GameService {
     }
 
     private void handleEndOfGame(Game game) {
+        List<Player> players = List.copyOf(game.getPlayers());
+        Integer topWounds = players.stream().mapToInt(p -> p.getWounds()).max().orElse(0);
+        List<Player> playersNotWounded = players.stream().filter(p -> p.getWounds() < topWounds)
+                .collect(Collectors.toList());
+        players = playersNotWounded.size() == 0 ? players : playersNotWounded;
+        List<Player> richest = new ArrayList<Player>();
+        Integer highestCoinAmount = -1;
+        for (Player player : players) {
+            Integer coinAmount = player.getCoins();
+            if (coinAmount > highestCoinAmount) {
+                richest.clear();
+                richest.add(player);
+                highestCoinAmount = coinAmount;
+            } else if (coinAmount == highestCoinAmount) {
+                richest.add(player);
+            }
+        }
 
+        Player winner = new Player();
+        if (richest.size() > 1) {
+            List<Player> winners = new ArrayList<Player>();
+            Integer highestWoundAmount = -1;
+            for (Player player : richest) {
+                Integer woundAmount = player.getWounds();
+                if (woundAmount > highestWoundAmount) {
+                    winners.clear();
+                    winners.add(player);
+                    highestWoundAmount = woundAmount;
+                } else if (woundAmount == highestWoundAmount) {
+                    winners.add(player);
+                }
+            }
+            Random random = new Random();
+            winner = winners.get(random.nextInt(winners.size()));
+        } else {
+            winner = richest.get(0);
+        }
+        game.setWinnerPlayer(winner);
+        save(game);
     }
 
 }

@@ -44,6 +44,9 @@ public class GameController {
     private static final String PLAYING_GAME_VIEW = "games/gamePlaying";
     private static final String PLAY_CARD_GAME_URL = "/{gameId}/card/{cardId}/play";
     private static final String PLAY_TORCH_CARD_GAME_URL = "/{gameId}/room/{roomDungeonId}/reveal";
+    private static final String END_GAME_URL = "/{gameId}/finished";
+    private static final String END_GAME_BASE_URL = "/finished";
+    private static final String END_GAME_VIEW = "games/finishedGame";
 
     private GameService gameService;
     private PlayerService playerService;
@@ -173,21 +176,38 @@ public class GameController {
     public String playingGame(ModelMap modelMap, @PathVariable("gameId") int gameId) {
         try {
             Game game = gameService.findGameById(gameId);
-            Player activePlayer = playerService.activePlayer();
-            List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
-            List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game, activePlayer);
-            List<CardType> revealedCards = cardService.revealedCards(game.getId());
-            modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
-            modelMap.addAttribute("game", game);
-            modelMap.addAttribute("activePlayer", activePlayer);
-            modelMap.addAttribute("otherPlayers", otherPlayers);
-            modelMap.addAttribute("revealedCards", revealedCards);
-
-            return PLAYING_GAME_VIEW;
+            if (!game.isActive()) {
+                return REDIRECT_GAME_BASE + gameId + END_GAME_BASE_URL;
+            } else {
+                Player activePlayer = playerService.activePlayer();
+                List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
+                List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game, activePlayer);
+                List<CardType> revealedCards = cardService.revealedCards(game.getId());
+                modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
+                modelMap.addAttribute("game", game);
+                modelMap.addAttribute("activePlayer", activePlayer);
+                modelMap.addAttribute("otherPlayers", otherPlayers);
+                modelMap.addAttribute("revealedCards", revealedCards);
+                return PLAYING_GAME_VIEW;
+            }
         } catch (NoSuchElementException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
+    }
 
+    @GetMapping(END_GAME_URL)
+    public String finishedGame(ModelMap modelMap, @PathVariable("gameId") int gameId) {
+        try {
+            Game game = gameService.findGameById(gameId);
+            if (game.isActive()) {
+                return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
+            } else {
+                modelMap.addAttribute("game", game);
+                return END_GAME_VIEW;
+            }
+        } catch (NoSuchElementException e) {
+            return REDIRECT_GAME_BASE + LIST_GAME_URL;
+        }
     }
 
     @GetMapping(PLAY_CARD_GAME_URL)

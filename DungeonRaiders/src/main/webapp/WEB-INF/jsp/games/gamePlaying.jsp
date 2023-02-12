@@ -210,16 +210,13 @@
                         <c:if test="${!card.isUsed}">
                             <div class="card text-center" style="background-color:#f3e1c0;margin:5px;">
                                 <img src="${card.type.image}" width="70px" />
-                                <c:if test="${card.type.isPlayable()}">
-                                    <a href="card/${card.id}/play">
-                                        <button type="button" class="btn btn-lg btn-primary btn-block"
-                                            style="background-color: #e86e02; border-color: #9b5c26;">
-                                            Jugar
-                                        </button>
-                                    </a>
-                                </c:if>
+                                <a href="card/${card.id}/play">
+                                    <button type="button" class="btn btn-lg btn-primary btn-block"
+                                        style="background-color: #e86e02; border-color: #9b5c26;">
+                                        Jugar
+                                    </button>
+                                </a>
                             </div>
-
                         </c:if>
                     </c:forEach>
                 </div>

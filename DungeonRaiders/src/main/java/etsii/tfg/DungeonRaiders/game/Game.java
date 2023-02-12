@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
@@ -33,7 +35,9 @@ public class Game extends BaseEntity {
     @NotBlank
     private String creatorUsername;
 
-    private String winnerUsername;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "player_id")
+    private Player winnerPlayer;
 
     @NotNull
     @Min(value = 3, groups = BasicInfo.class)
@@ -55,7 +59,7 @@ public class Game extends BaseEntity {
     }
 
     public Boolean isActive() {
-        return winnerUsername == null;
+        return winnerPlayer == null;
     }
 
     public Boolean isInLobby() {
