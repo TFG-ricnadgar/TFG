@@ -26,4 +26,7 @@ public interface CardRepository extends CrudRepository<Card, Integer> {
     @Query("DELETE FROM Card c WHERE c.id = ?1")
     void deleteCardById(Integer id);
 
+    @Query("SELECT c.type From Card c WHERE c.player.game.id=?1 AND c.isRevealed=true")
+    List<CardType> findAllRevealedCards(Integer gameId);
+
 }

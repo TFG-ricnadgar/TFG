@@ -58,6 +58,24 @@
                     </c:forEach>
                 </div>
 
+                <c:if test="${!empty revealedCards}">
+                    <div class="col d-flex justify-content-center">
+                        <div class="card text-center"
+                            style="background-color:#dfb8f1 ; border-color: #5a0075; border-width: 0.15em;width: 28rem; margin-bottom: 10px;">
+                            <h3>
+                                <img src="/img/icons/CrystalBall.png" width="40px" />
+                                Cartas reveladas
+                                <img src="/img/icons/CrystalBall.png" width="40px" />
+                            </h3>
+                            <div>
+                                <c:forEach items="${revealedCards}" var="cardType">
+                                    <img src="${cardType.image}" width="65px" />
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="col d-flex justify-content-center">
                     <c:forEach items="${floorDungeonRooms}" var="dungeonRoom">
                         <div class="card text-center"

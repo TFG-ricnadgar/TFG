@@ -18,6 +18,7 @@ import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
 import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 
@@ -175,10 +176,12 @@ public class GameController {
             Player activePlayer = playerService.activePlayer();
             List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
             List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game, activePlayer);
+            List<CardType> revealedCards = cardService.revealedCards(game.getId());
             modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
             modelMap.addAttribute("game", game);
             modelMap.addAttribute("activePlayer", activePlayer);
             modelMap.addAttribute("otherPlayers", otherPlayers);
+            modelMap.addAttribute("revealedCards", revealedCards);
 
             return PLAYING_GAME_VIEW;
         } catch (NoSuchElementException e) {

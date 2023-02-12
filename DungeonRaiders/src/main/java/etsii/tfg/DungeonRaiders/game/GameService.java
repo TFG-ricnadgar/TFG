@@ -107,7 +107,8 @@ public class GameService {
         Boolean keyWithTreasure = roomInPlay.getType() == "TREASURE" && card.getType() == CardType.key;
         Boolean escapeCardWithFinalBoss = roomInPlay.getType() == "FINAL_BOSS"
                 && ((FinalBoss) roomInPlay).getEscapeCard() == card.getType();
-        Boolean cardIsPlayableInRoom = swordWithEnemy || keyWithTreasure || escapeCardWithFinalBoss || card.isBasic();
+        Boolean cardIsPlayableInRoom = swordWithEnemy || keyWithTreasure || escapeCardWithFinalBoss || card.isBasic()
+                || card.getType().equals(CardType.crystalBall);
 
         if (playerInGame && game.isInGame() && cardIsOwnedByPlayer && !card.getIsUsed() && cardNotPlayedInTurn
                 && cardIsPlayableInRoom) {
@@ -116,7 +117,11 @@ public class GameService {
             cardService.save(card);
 
             List<Card> cardsPlayedThisTurn = cardService.findAllCardsPlayedThisTurn(game.getId());
-            if (cardsPlayedThisTurn.size() >= game.getPlayers().size()) {
+            Boolean allPlayersPlayedCards = cardsPlayedThisTurn.size() >= game.getPlayers().size();
+            if (allPlayersPlayedCards
+                    && cardsPlayedThisTurn.stream().anyMatch(c -> c.getType() == CardType.crystalBall)) {
+                cardService.handleCrystallBall(game, cardsPlayedThisTurn);
+            } else if (allPlayersPlayedCards) {
                 cardService.handleCardsPlayedThisTurn(game, cardsPlayedThisTurn);
                 newTurn(game);
             }

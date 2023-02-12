@@ -43,6 +43,10 @@ public class CardService {
         return cardRepository.findById(cardId).get();
     }
 
+    public void deleteCardById(Integer id) {
+        cardRepository.deleteCardById(id);
+    }
+
     public Card findCardPlayedInTurn(Integer playerId) {
         return cardRepository.findCardPlayedThisTurn(playerId);
     }
@@ -85,6 +89,7 @@ public class CardService {
         for (Card card : gameCards) {
             if (card.isBasic()) {
                 card.setIsRecentlyUsed(false);
+                card.setIsRevealed(false);
                 save(card);
             } else {
                 deleteCard(card);
@@ -98,6 +103,7 @@ public class CardService {
             if (card.isBasic()) {
                 card.setIsRecentlyUsed(false);
                 card.setIsUsed(false);
+                card.setIsRevealed(false);
                 save(card);
             } else {
                 deleteCard(card);
@@ -105,8 +111,19 @@ public class CardService {
         }
     }
 
-    public void deleteCardById(Integer id) {
-        cardRepository.deleteCardById(id);
+    public void handleCrystallBall(Game game, List<Card> cardsPlayedThisTurn) {
+        for (Card card : cardsPlayedThisTurn) {
+            if (card.getType().equals(CardType.crystalBall)) {
+                deleteCard(card);
+            } else {
+                card.setIsRevealed(true);
+                save(card);
+            }
+        }
+    }
+
+    public List<CardType> revealedCards(Integer gameId) {
+        return cardRepository.findAllRevealedCards(gameId);
     }
 
 }

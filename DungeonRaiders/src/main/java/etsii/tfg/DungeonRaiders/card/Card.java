@@ -42,6 +42,9 @@ public class Card extends BaseEntity {
     @NotNull
     private Boolean isRecentlyUsed = false;
 
+    @NotNull
+    private Boolean isRevealed = false;
+
     public Boolean isBasic() {
         return this.type.equals(CardType.one) || this.type.equals(CardType.two) || this.type.equals(CardType.three)
                 || this.type.equals(CardType.four) || this.type.equals(CardType.five);
