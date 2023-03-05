@@ -64,7 +64,7 @@
 
                         </div>
                         <div class="text-center" style="margin-top: 8px;">
-                            <a href="delete" style="color: #961212;">
+                            <a href="exit" style="color: #961212;">
                                 <u>Cancelar incursión</u>
                             </a>
                         </div>

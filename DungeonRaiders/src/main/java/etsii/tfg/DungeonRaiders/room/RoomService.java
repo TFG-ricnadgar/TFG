@@ -29,4 +29,8 @@ public class RoomService {
         return roomRepository.findAllRooms();
     }
 
+    public Room findRoomById(Integer id) {
+        return roomRepository.findById(id).orElse(null);
+    }
+
 }

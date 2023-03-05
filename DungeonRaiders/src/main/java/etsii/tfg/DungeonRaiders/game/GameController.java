@@ -37,7 +37,6 @@ public class GameController {
     private static final String LOBBY_GAME_VIEW = "games/gameLobby";
     private static final String JOIN_LOBBY_GAME_URL = "/{gameId}/join";
     private static final String EXIT_GAME_URL = "/{gameId}/exit";
-    private static final String DELETE_GAME_URL = "/{gameId}/delete";
     private static final String START_GAME_URL = "/{gameId}/start";
     private static final String PLAYING_GAME_URL = "/{gameId}/playing";
     private static final String PLAYING_GAME_BASE_URL = "/playing";
@@ -147,12 +146,6 @@ public class GameController {
     @GetMapping(EXIT_GAME_URL)
     public String exitGame(ModelMap modelMap) {
         gameService.exitActiveGame();
-        return REDIRECT_GAME_BASE + LIST_GAME_URL;
-    }
-
-    @GetMapping(DELETE_GAME_URL)
-    public String deleteGame(ModelMap modelMap) {
-        gameService.deleteActiveGame();
         return REDIRECT_GAME_BASE + LIST_GAME_URL;
     }
 

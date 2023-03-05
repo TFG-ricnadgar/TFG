@@ -31,6 +31,8 @@ public class GameService {
     private RoomDungeonService roomDungeonService;
     private TorchRoomService torchRoomService;
 
+    private static final Integer MIN_PLAYER_AMOUNT = 3;
+
     @Autowired
     public GameService(GameRepository gameRepository, UserService userService,
             PlayerService playerService, CardService cardService, RoomDungeonService roomDungeonService,
@@ -52,38 +54,39 @@ public class GameService {
     }
 
     public void newGame(Game game) {
-
         game.setCreatorUsername(userService.authenticatedUsername());
         save(game);
         playerService.joinGame(game);
     }
 
     public Game findGameById(int gameId) {
-        return gameRepository.findById(gameId).orElseThrow();
+        return gameRepository.findById(gameId).orElse(null);
     }
 
     public void exitActiveGame() {
         Game activeGame = playerService.activeUserGame();
 
         if (activeGame != null) {
-            if (activeGame.isInLobby()) {
-                deleteActiveGame();
+            Boolean lessThanMinPlayersInGame = activeGame.isInGame()
+                    && activeGame.getPlayers().size() - 1 < MIN_PLAYER_AMOUNT;
+            Boolean creatorExitsInLobby = activeGame.isInLobby()
+                    && activeGame.getCreatorUsername().equals(userService.authenticatedUsername());
+            if (lessThanMinPlayersInGame || creatorExitsInLobby) {
+                deleteGame(activeGame);
+            } else {
+                List<Player> playerList = activeGame.getPlayers();
+                Player player = playerList.stream()
+                        .filter(p -> p.getUser().getUsername().equals(userService.authenticatedUsername())).findAny()
+                        .get();
+
+                playerService.deleteById(player.getId());
             }
-            List<Player> playerList = activeGame.getPlayers();
-            Player player = playerList.stream()
-                    .filter(p -> p.getUser().getUsername().equals(userService.authenticatedUsername())).findAny()
-                    .get();
-
-            playerService.deleteById(player.getId());
-
         }
     }
 
-    public void deleteActiveGame() {
-        Game activeGame = playerService.activeUserGame();
-        if (activeGame.getCreatorUsername().equals(userService.authenticatedUsername())) {
-            gameRepository.delete(activeGame);
-        }
+    public void deleteGame(Game game) {
+        gameRepository.delete(game);
+
     }
 
     public Boolean isActiveUserCreator(Game game) {
@@ -157,12 +160,7 @@ public class GameService {
         }
     }
 
-    private void handleEndOfGame(Game game) {
-        List<Player> players = List.copyOf(game.getPlayers());
-        Integer topWounds = players.stream().mapToInt(p -> p.getWounds()).max().orElse(0);
-        List<Player> playersNotWounded = players.stream().filter(p -> p.getWounds() < topWounds)
-                .collect(Collectors.toList());
-        players = playersNotWounded.size() == 0 ? players : playersNotWounded;
+    private List<Player> getRichestPlayers(List<Player> players) {
         List<Player> richest = new ArrayList<Player>();
         Integer highestCoinAmount = -1;
         for (Player player : players) {
@@ -175,28 +173,44 @@ public class GameService {
                 richest.add(player);
             }
         }
+        return richest;
+    }
+
+    private Player tieBreakPlayers(List<Player> players) {
+        Player winner = new Player();
+        List<Player> winners = new ArrayList<Player>();
+        Integer highestWoundAmount = -1;
+        for (Player player : players) {
+            Integer woundAmount = player.getWounds();
+            if (woundAmount > highestWoundAmount) {
+                winners.clear();
+                winners.add(player);
+                highestWoundAmount = woundAmount;
+            } else if (woundAmount == highestWoundAmount) {
+                winners.add(player);
+            }
+        }
+        Random random = new Random();
+        winner = winners.get(random.nextInt(winners.size()));
+        return winner;
+    }
+
+    private void handleEndOfGame(Game game) {
+        List<Player> posibleWinners = List.copyOf(game.getPlayers());
+        Integer topWounds = posibleWinners.stream().mapToInt(p -> p.getWounds()).max().orElse(0);
+        List<Player> playersNotWounded = posibleWinners.stream().filter(p -> p.getWounds() < topWounds)
+                .collect(Collectors.toList());
+        posibleWinners = playersNotWounded.size() == 0 ? posibleWinners : playersNotWounded;
+
+        List<Player> richestPlayers = getRichestPlayers(posibleWinners);
 
         Player winner = new Player();
-        if (richest.size() > 1) {
-            List<Player> winners = new ArrayList<Player>();
-            Integer highestWoundAmount = -1;
-            for (Player player : richest) {
-                Integer woundAmount = player.getWounds();
-                if (woundAmount > highestWoundAmount) {
-                    winners.clear();
-                    winners.add(player);
-                    highestWoundAmount = woundAmount;
-                } else if (woundAmount == highestWoundAmount) {
-                    winners.add(player);
-                }
-            }
-            Random random = new Random();
-            winner = winners.get(random.nextInt(winners.size()));
+        if (richestPlayers.size() > 1) {
+            winner = tieBreakPlayers(richestPlayers);
         } else {
-            winner = richest.get(0);
+            winner = richestPlayers.get(0);
         }
         game.setWinnerPlayer(winner);
         save(game);
     }
-
 }

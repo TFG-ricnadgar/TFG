@@ -1,0 +1,17 @@
+roomId,cardType,isPlayed
+5,five,true
+5,sword,true
+5,key,false
+5,torch,false
+5,crystalBall,true
+21,sword,false
+21,key,true
+21,five,true
+30,five,true
+30,sword,true
+30,key,false
+31,key,true
+32,crystalBall,true
+34,torch,true
+
+
