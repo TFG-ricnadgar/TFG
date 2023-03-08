@@ -7,10 +7,6 @@ jobs:
     name: Deploying to Google Cloud
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./DungeonRaiders
-
     steps:
     - name: Local config
       uses: actions/checkout@v2
