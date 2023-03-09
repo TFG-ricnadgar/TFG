@@ -118,7 +118,7 @@ public class GameController {
                 return LOBBY_GAME_VIEW;
             }
 
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
@@ -210,7 +210,7 @@ public class GameController {
             Card card = cardService.findCardById(cardId);
             gameService.playCard(game, card);
             return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
