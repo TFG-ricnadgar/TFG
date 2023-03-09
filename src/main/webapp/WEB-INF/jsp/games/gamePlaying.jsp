@@ -255,6 +255,13 @@
                             </div>
                         </div>
                     </div>
+
+
+                </div>
+                <div class="text-center" style="margin-top: 8px;">
+                    <a href="exit" style="color: #961212;">
+                        <u>Abandonar incursión</u>
+                    </a>
                 </div>
 
                 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

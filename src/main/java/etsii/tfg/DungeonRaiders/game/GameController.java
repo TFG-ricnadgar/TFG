@@ -138,7 +138,7 @@ public class GameController {
                 playerService.joinGame(game);
                 return REDIRECT_GAME + game.getId() + LOBBY_BASE_GAME_URL;
             }
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
@@ -160,7 +160,7 @@ public class GameController {
             } else {
                 return REDIRECT_GAME_BASE + LIST_GAME_URL;
             }
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
@@ -169,7 +169,7 @@ public class GameController {
     public String playingGame(ModelMap modelMap, @PathVariable("gameId") int gameId) {
         try {
             Game game = gameService.findGameById(gameId);
-            if (!game.isActive()) {
+            if (!game.isActive() || !playerService.activeUserGame().equals(game)) {
                 return REDIRECT_GAME_BASE + gameId + END_GAME_BASE_URL;
             } else {
                 Player activePlayer = playerService.activePlayer();
@@ -183,7 +183,7 @@ public class GameController {
                 modelMap.addAttribute("revealedCards", revealedCards);
                 return PLAYING_GAME_VIEW;
             }
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
@@ -198,7 +198,7 @@ public class GameController {
                 modelMap.addAttribute("game", game);
                 return END_GAME_VIEW;
             }
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
@@ -222,7 +222,7 @@ public class GameController {
             RoomDungeon roomDungeon = roomDungeonService.findRoomDungeonById(roomDungeonId);
             gameService.playTorchCard(roomDungeon);
             return REDIRECT_GAME + gameId + PLAYING_GAME_BASE_URL;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
