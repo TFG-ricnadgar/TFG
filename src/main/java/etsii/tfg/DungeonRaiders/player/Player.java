@@ -55,4 +55,15 @@ public class Player extends BaseEntity {
     public Boolean hasATorch() {
         return this.cards.stream().anyMatch(c -> c.getType() == CardType.torch);
     }
+
+    public Player() {
+    }
+
+    public Player(User user, Game game, Integer coins, Integer wounds, Character character) {
+        this.user = user;
+        this.game = game;
+        this.coins = coins;
+        this.wounds = wounds;
+        this.character = character;
+    }
 }

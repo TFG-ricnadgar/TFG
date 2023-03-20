@@ -29,13 +29,9 @@ public class PlayerService {
         // initial player attributes
         User user = userService.authenticatedUser();
 
-        Player newPlayer = new Player();
         Character randomCharacter = getRandomCharacterNotUsed(game);
-        newPlayer.setUser(user);
-        newPlayer.setGame(game);
-        newPlayer.setCoins(randomCharacter.getInitialCoins());
-        newPlayer.setWounds(randomCharacter.getInitialWounds());
-        newPlayer.setCharacter(randomCharacter);
+        Player newPlayer = new Player(user, game, randomCharacter.getInitialCoins(),
+                randomCharacter.getInitialWounds(), randomCharacter);
         save(newPlayer);
     }
 
