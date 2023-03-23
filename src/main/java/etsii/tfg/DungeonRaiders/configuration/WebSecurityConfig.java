@@ -50,6 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/img/**").permitAll()
@@ -65,6 +66,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutUrl("/user/logout")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout", "GET")).permitAll();
+
+        // Configuración para que funcione la consola de administración
+        // de la BD H2 (deshabilitar las cabeceras de protección contra
+        // ataques de tipo csrf y habilitar los framesets si su contenido
+        // se sirve desde esta misma página.
+        http.csrf().ignoringAntMatchers("/h2-console/**");
+        http.headers().frameOptions().sameOrigin();
     }
 
 }
