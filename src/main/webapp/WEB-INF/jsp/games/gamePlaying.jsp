@@ -86,16 +86,13 @@
                     function checkTurnChanged() {
                         var url = window.location.pathname + "/turn";
                         $.get(url, function (data, status) {
-                            if (turn = "-2") {
+                            if (turn == "-2") {
                                 turn = data;
-                            }
-                            else if (turn != data) {
+                            } else if (turn != data) {
                                 changeRooms();
                                 changePlayer();
                                 turn = data;
                             }
-
-
                         });
                     }
                     var turn = "-2";
