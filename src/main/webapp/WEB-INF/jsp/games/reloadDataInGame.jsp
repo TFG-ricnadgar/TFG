@@ -2,9 +2,67 @@
     <%@ taglib prefix="dungeonRaiders" tagdir="/WEB-INF/tags" %>
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
-            <body style="font-family:fantasy; letter-spacing: 1px;">
+            <body>
                 <jspTagStart />
+                <div class="col d-flex justify-content-center">
+
+                    <c:forEach items="${otherPlayers}" var="player">
+                        <div class="card" style="background-color:#c4b3a2;margin:10px;width:17rem">
+                            <div class="row text-center">
+                                <div class="col-md-3 mx-auto my-auto ">
+                                    <img src="${player.character.image}" width="50px" />
+                                </div>
+                                <div class="col-md-7 mx-auto my-auto">
+                                    <c:out value="${player.user.username}" />
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-sm-5 mx-auto my-auto ">
+                                    <img src="/img/icons/Coin.png" width="35px" />
+                                    <c:out value="${player.coins}" />
+                                </div>
+                                <div class="col-sm-5 mx-auto my-auto">
+                                    <img src="/img/icons/Wound.png" width="35px" />
+                                    <c:out value="${player.wounds}" />
+                                </div>
+                            </div>
+                            <div class="row text-center ">
+                                <div class="col-sm-6" style="padding-right: 0px;">
+                                    Cartas jugadas :
+                                </div>
+                                <div class="col-sm-6" style="padding-left: 0px;">
+                                    <c:forEach items="${player.cards}" var="card">
+                                        <c:if test="${card.isUsed && !card.isRecentlyUsed}">
+                                            <img src="${card.type.image}" width="25px" />
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+
+
+                <c:if test="${!empty revealedCards}">
+                    <div class="col d-flex justify-content-center">
+                        <div class="card text-center"
+                            style="background-color:#dfb8f1 ; border-color: #5a0075; border-width: 0.15em;width: 28rem; margin-bottom: 10px;">
+                            <h3>
+                                <img src="/img/icons/CrystalBall.png" width="40px" />
+                                Cartas reveladas
+                                <img src="/img/icons/CrystalBall.png" width="40px" />
+                            </h3>
+                            <div>
+                                <c:forEach items="${revealedCards}" var="cardType">
+                                    <img src="${cardType.image}" width="65px" />
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
+
+
                 <div class="col d-flex justify-content-center">
                     <c:forEach items="${floorDungeonRooms}" var="dungeonRoom">
                         <div class="card text-center"

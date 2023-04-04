@@ -32,6 +32,10 @@ public class GameController {
     private static final String PLAY_TORCH_CARD_GAME_URL = "/{gameId}/room/{roomDungeonId}/reveal";
     private static final String END_GAME_URL = "/{gameId}/finished";
     private static final String END_GAME_VIEW = "games/finishedGame";
+    private static final String RELOAD_PLAYING_GAME_URL = "/{gameId}/playing/reload";
+    private static final String RELOAD_PLAYING_GAME_VIEW = "games/reloadDataInGame";
+    private static final String PLAYER_PLAYING_GAME_URL = "/{gameId}/playing/active";
+    private static final String ACTIVE_PLAYING_GAME_VIEW = "games/activePlayerInGame";
 
     private GameService gameService;
     private PlayerService playerService;
@@ -77,17 +81,37 @@ public class GameController {
                 return REDIRECT_GAME + END_GAME_URL;
             } else {
                 Player activePlayer = playerService.activePlayer();
-                List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
-                List<CardType> revealedCards = cardService.revealedCards(game.getId());
                 modelMap.addAttribute("game", game);
                 modelMap.addAttribute("activePlayer", activePlayer);
-                modelMap.addAttribute("otherPlayers", otherPlayers);
-                modelMap.addAttribute("revealedCards", revealedCards);
                 return PLAYING_GAME_VIEW;
             }
         } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME + LIST_GAME_URL;
         }
+    }
+
+    @GetMapping(RELOAD_PLAYING_GAME_URL)
+    public String reloadDataInGame(ModelMap modelMap, @PathVariable("gameId") int gameId) {
+        Game game = gameService.findGameById(gameId);
+        Player activePlayer = playerService.activePlayer();
+        List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
+        List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game, activePlayer);
+        List<CardType> revealedCards = cardService.revealedCards(game.getId());
+        modelMap.addAttribute("otherPlayers", otherPlayers);
+        modelMap.addAttribute("game", game);
+        modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
+        modelMap.addAttribute("revealedCards", revealedCards);
+        modelMap.addAttribute("activePlayer", activePlayer);
+        return RELOAD_PLAYING_GAME_VIEW;
+
+    }
+
+    @GetMapping(PLAYER_PLAYING_GAME_URL)
+    public String activePlayerInGame(ModelMap modelMap) {
+        Player activePlayer = playerService.activePlayer();
+        modelMap.addAttribute("activePlayer", activePlayer);
+        return ACTIVE_PLAYING_GAME_VIEW;
+
     }
 
     @GetMapping(END_GAME_URL)
