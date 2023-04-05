@@ -61,7 +61,26 @@
 
                 <script type="text/javascript">
 
-                    function changeRooms() {
+                    function checkGameReloadNeeded() {
+                        var url = window.location.pathname + "/reloadNeeded";
+                        $.get(url, function (data, status) {
+                            if (data == true)
+                                location.reload();
+                        });
+                    }
+                    function checkPlayersChanged() {
+                        var url = window.location.pathname + "/playerAmount";
+                        $.get(url, function (data, status) {
+                            if (players == "0") {
+                                players = data;
+                            } else if (players != data) {
+                                changeRoomsPlayers();
+                                players = data;
+                            }
+                        });
+                    }
+
+                    function changeRoomsPlayers() {
                         var content = $('#allReloadInfo');
                         var url = window.location.pathname + "/reload";
                         var pageTextBetweenDelimiters;
@@ -89,15 +108,18 @@
                             if (turn == "-2") {
                                 turn = data;
                             } else if (turn != data) {
-                                changeRooms();
+                                changeRoomsPlayers();
                                 changePlayer();
                                 turn = data;
                             }
                         });
                     }
                     var turn = "-2";
-                    changeRooms();
+                    var players = "0";
+                    changeRoomsPlayers();
                     changePlayer();
+                    setInterval(checkGameReloadNeeded, 3000);
+                    setInterval(checkPlayersChanged, 6000);
                     setInterval(checkTurnChanged, 3000);
                 </script>
 

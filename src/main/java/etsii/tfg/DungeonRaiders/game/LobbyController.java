@@ -25,13 +25,18 @@ public class LobbyController {
     private static final String REDIRECT_GAME_BASE = "redirect:/game";
     private static final String LIST_GAME_URL = "/list";
     private static final String LIST_GAME_VIEW = "games/gameList";
+    private static final String RELOAD_LIST_GAME_URL = LIST_GAME_URL + "/reload";
+    private static final String RELOAD_LIST_GAME_VIEW = "games/reloadGameList";
     private static final String CREATE_GAME_URL = "/new";
     private static final String CREATE_GAME_VIEW = "games/newGameForm";
     private static final String LOBBY_BASE_GAME_URL = "/lobby";
     private static final String LOBBY_GAME_URL = "/{gameId}/lobby";
     private static final String LOBBY_GAME_VIEW = "games/gameLobby";
+    private static final String RELOAD_LOBBY_GAME_URL = LOBBY_GAME_URL + "/reload";
+    private static final String RELOAD_LOBBY_GAME_VIEW = "games/reloadGameLobby";
     private static final String JOIN_LOBBY_GAME_URL = "/{gameId}/join";
     private static final String PLAYING_GAME_BASE_URL = "/playing";
+
     private PlayerService playerService;
     private GameService gameService;
 
@@ -83,6 +88,13 @@ public class LobbyController {
         }
     }
 
+    @GetMapping(RELOAD_LIST_GAME_URL)
+    public String gamesListReload(ModelMap modelMap) {
+        List<Game> inLobbyGames = gameService.findAllInLobbyGames();
+        modelMap.addAttribute("gamesList", inLobbyGames);
+        return RELOAD_LIST_GAME_VIEW;
+    }
+
     @GetMapping(LOBBY_GAME_URL)
     public String gameLobby(ModelMap modelMap, @PathVariable("gameId") int gameId) {
         try {
@@ -92,15 +104,24 @@ public class LobbyController {
             } else if (!game.isActive()) {
                 return REDIRECT_GAME_BASE + LIST_GAME_URL;
             } else {
-                List<Player> players = game.getPlayers();
                 modelMap.addAttribute("game", game);
-                modelMap.addAttribute("players", players);
                 return LOBBY_GAME_VIEW;
             }
 
         } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
+    }
+
+    @GetMapping(RELOAD_LOBBY_GAME_URL)
+    public String gameLobbyReload(ModelMap modelMap, @PathVariable("gameId") int gameId) {
+
+        Game game = gameService.findGameById(gameId);
+
+        List<Player> players = game.getPlayers();
+        modelMap.addAttribute("game", game);
+        modelMap.addAttribute("players", players);
+        return RELOAD_LOBBY_GAME_VIEW;
     }
 
     @GetMapping(JOIN_LOBBY_GAME_URL)

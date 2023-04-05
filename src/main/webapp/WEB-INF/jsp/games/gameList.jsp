@@ -19,52 +19,47 @@
                         </div>
                     </div>
 
-                    <c:forEach items="${gamesList}" var="game">
+                    <span id="reloadGameListInfo">
 
-                        <div class="card"
-                            style="margin-bottom: 10px; background-color:#96aecf ; border-color: #415d8a; border-width: 0.15em;">
-                            <div class="row">
-
-                                <div class="col my-auto ">
-                                    <c:choose>
-                                        <c:when test="${game.maxPlayers == game.players.size()}">
-                                            <img src="/img/rooms/ClosedDungeonDoor.png" width="100px">
-                                        </c:when>
-                                        <c:when test="${game.maxPlayers != game.players.size()}">
-                                            <img src="/img/rooms/OpenedDungeonDoor.png" width="100px">
-                                        </c:when>
-                                    </c:choose>
-                                </div>
-                                <div class="col-6 my-auto">
-                                    <h2>
-                                        <c:out value="${game.name}" /> -
-                                        <c:out value="${game.creatorUsername}" />
-                                    </h2>
-                                </div>
-                                <div class="col-2 my-auto">
-                                    <c:if test="${game.maxPlayers != game.players.size()}">
-                                        <a href="${game.id}/join">
-                                            <button type="button" class="btn btn-primary  btn-lg btn-block"
-                                                style="background-color: #e86e02; border-color: #9b5c26;">
-                                                <h2><u>Únete</u></h2>
-                                            </button>
-                                        </a>
-                                    </c:if>
-                                </div>
-
-
-                                <div class="col my-auto mx-auto">
-                                    <h3 class="display-6">
-                                        <c:out value="${game.players.size()}" /> /
-                                        <c:out value="${game.maxPlayers}" />
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </c:forEach>
+                    </span>
 
                 </div>
 
+                <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+                    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+                    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                    crossorigin="anonymous"></script>
+                <script type="text/javascript">
+
+                    function changeGames() {
+                        var content = $('#reloadGameListInfo');
+                        var url = window.location.pathname + "/reload";
+                        var pageTextBetweenDelimiters;
+                        content.load(url, function (response, status, xhr) {
+                            var fullPageTextAsString = response;
+                            pageTextBetweenDelimiters = fullPageTextAsString.substring(fullPageTextAsString.indexOf("<jspTagStart />"), fullPageTextAsString.indexOf("<jspTagEnd />"));
+                            content.html(pageTextBetweenDelimiters);
+                        });
+                    }
+
+
+                    function checkGamesChanged() {
+                        var url = window.location.pathname + "/amount";
+                        $.get(url, function (data, status) {
+                            if (games == "-1") {
+                                games = data;
+                            } else if (games != data) {
+                                changeGames();
+                                games = data;
+                            }
+                        });
+                    }
+
+                    var games = "-1";
+                    changeGames();
+                    setInterval(checkGamesChanged, 3000);      
+                </script>
             </body>
