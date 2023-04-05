@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.player.Player;
+import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
 import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
 import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 import lombok.Getter;
@@ -49,9 +50,11 @@ public class Game extends BaseEntity {
     @NotNull
     private Integer turn = -1;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "game", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
     private List<Player> players;
+
+    @OneToMany(mappedBy = "game", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
+    private List<RoomDungeon> roomDungeons;
 
     public Integer getActualFloor() {
         return Math.floorDiv(this.turn, DungeonRaiderConstants.ROOMS_PER_FLOOR_AMOUNT);

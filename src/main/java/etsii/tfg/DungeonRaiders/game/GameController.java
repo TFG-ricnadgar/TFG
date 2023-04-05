@@ -36,6 +36,7 @@ public class GameController {
     private static final String RELOAD_PLAYING_GAME_VIEW = "games/reloadDataInGame";
     private static final String PLAYER_PLAYING_GAME_URL = "/{gameId}/playing/active";
     private static final String ACTIVE_PLAYING_GAME_VIEW = "games/activePlayerInGame";
+    private static final String LOBBY_GAME_URL = "/{gameId}/lobby";
 
     private GameService gameService;
     private PlayerService playerService;
@@ -79,7 +80,9 @@ public class GameController {
             Game game = gameService.findGameById(gameId);
             if (!game.isActive() || !playerService.activeUserGame().equals(game)) {
                 return REDIRECT_GAME + END_GAME_URL;
-            } else {
+            } else if(game.isInLobby()){
+                return REDIRECT_GAME + LOBBY_GAME_URL;
+            }else {
                 Player activePlayer = playerService.activePlayer();
                 modelMap.addAttribute("game", game);
                 modelMap.addAttribute("activePlayer", activePlayer);

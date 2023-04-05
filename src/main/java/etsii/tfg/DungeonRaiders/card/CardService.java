@@ -125,5 +125,4 @@ public class CardService {
     public List<CardType> revealedCards(Integer gameId) {
         return cardRepository.findAllRevealedCards(gameId);
     }
-
 }

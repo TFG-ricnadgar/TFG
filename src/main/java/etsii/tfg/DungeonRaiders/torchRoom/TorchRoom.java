@@ -23,11 +23,11 @@ public class TorchRoom extends BaseEntity {
         this.player = player;
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "room_dungeon_id")
     private RoomDungeon roomDungeon;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "player_id")
     private Player player;
 }

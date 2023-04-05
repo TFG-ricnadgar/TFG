@@ -31,7 +31,6 @@ public class LobbyController {
     private static final String LOBBY_GAME_URL = "/{gameId}/lobby";
     private static final String LOBBY_GAME_VIEW = "games/gameLobby";
     private static final String JOIN_LOBBY_GAME_URL = "/{gameId}/join";
-    private static final String PLAYING_GAME_URL = "/{gameId}/playing";
     private static final String PLAYING_GAME_BASE_URL = "/playing";
     private PlayerService playerService;
     private GameService gameService;

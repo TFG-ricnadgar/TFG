@@ -18,6 +18,7 @@ import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
+import etsii.tfg.DungeonRaiders.torchRoom.TorchRoom;
 import etsii.tfg.DungeonRaiders.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,11 +29,11 @@ import lombok.Setter;
 @Table(name = "players")
 public class Player extends BaseEntity {
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "game_id")
     private Game game;
 
@@ -49,8 +50,11 @@ public class Player extends BaseEntity {
     @Column(name = "character_name")
     private Character character;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "player", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
     private List<Card> cards;
+
+    @OneToMany(mappedBy = "player", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
+    private List<TorchRoom> torchRooms;
 
     public Boolean hasATorch() {
         return this.cards.stream().anyMatch(c -> c.getType() == CardType.torch);

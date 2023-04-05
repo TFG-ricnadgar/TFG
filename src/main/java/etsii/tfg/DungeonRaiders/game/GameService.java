@@ -72,7 +72,7 @@ public class GameService {
             Boolean creatorExitsInLobby = activeGame.isInLobby()
                     && activeGame.getCreatorUsername().equals(userService.authenticatedUsername());
             if (lessThanMinPlayersInGame || creatorExitsInLobby) {
-                deleteGame(activeGame);
+                deleteGame(activeGame.getId());
             } else {
                 List<Player> playerList = activeGame.getPlayers();
                 Player player = playerList.stream()
@@ -84,8 +84,8 @@ public class GameService {
         }
     }
 
-    public void deleteGame(Game game) {
-        gameRepository.delete(game);
+    public void deleteGame(int gameId) {
+        gameRepository.deleteById(gameId);
 
     }
 

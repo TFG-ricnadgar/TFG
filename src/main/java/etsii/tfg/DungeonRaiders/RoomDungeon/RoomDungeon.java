@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 public class RoomDungeon extends BaseEntity {
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "game_id")
     private Game game;
 
