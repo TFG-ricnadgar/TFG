@@ -5,22 +5,29 @@
             <body>
                 <jspTagStart />
 
+                <c:set var="isGameCreator" value="${pageContext.request.userPrincipal.name == game.creatorUsername}" />
+
                 <div class="col d-flex justify-content-center">
-                    <dungeonRaiders:lobbyUser name="${players[0].user.username}" img="${players[0].character.image}" />
-                    <dungeonRaiders:lobbyUser name="${players[1].user.username}" img="${players[1].character.image}" />
-                    <dungeonRaiders:lobbyUser name="${players[2].user.username}" img="${players[2].character.image}" />
+                    <dungeonRaiders:lobbyUser name="${players[0].getName()}" img="${players[0].character.image}"
+                        id="${players[0].id}" isGameCreator="${isGameCreator}" />
+                    <dungeonRaiders:lobbyUser name="${players[1].getName()}" img="${players[1].character.image}"
+                        id="${players[1].id}" isGameCreator="${isGameCreator}" />
+                    <dungeonRaiders:lobbyUser name="${players[2].getName()}" img="${players[2].character.image}"
+                        id="${players[2].id}" isGameCreator="${isGameCreator}" />
                 </div>
                 <div class="col d-flex justify-content-center">
                     <img src="/img/DungeonTable.png">
                 </div>
                 <div class="col d-flex justify-content-center">
-                    <dungeonRaiders:lobbyUser name="${players[3].user.username}" img="${players[3].character.image}" />
-                    <dungeonRaiders:lobbyUser name="${players[4].user.username}" img="${players[4].character.image}" />
+                    <dungeonRaiders:lobbyUser name="${players[3].getName()}" img="${players[3].character.image}"
+                        id="${players[3].id}" isGameCreator="${isGameCreator}" />
+                    <dungeonRaiders:lobbyUser name="${players[4].getName()}" img="${players[4].character.image}"
+                        id="${players[4].id}" isGameCreator="${isGameCreator}" />
                 </div>
                 <c:choose>
                     <c:when test="${pageContext.request.userPrincipal.name == game.creatorUsername}">
                         <div class="row justify-content-center" style="margin-top: 8px;">
-                            <div class="col-4">
+                            <div class="col-6" style="max-width: 40em;">
                                 <c:choose>
                                     <c:when test="${game.hasEnoughPlayersToStart()}">
                                         <a href="start">
@@ -46,9 +53,9 @@
                             </a>
                         </div>
                     </c:when>
-                    <c:when test="${pageContext.request.userPrincipal.name != game.creatorUsername}">
+                    <c:when test="${!isGameCreator}">
                         <div class="row justify-content-center" style="margin-top: 8px;">
-                            <div class="col-4">
+                            <div class="col-6" style="max-width: 40em;">
                                 <a href="exit">
                                     <button type="button" class="btn btn-lg btn-primary btn-block"
                                         style="background-color: #961212;; border-color: #5c1515;">

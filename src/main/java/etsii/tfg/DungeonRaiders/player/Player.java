@@ -1,6 +1,7 @@
 package etsii.tfg.DungeonRaiders.player;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,6 +34,8 @@ public class Player extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String name;
+
     @ManyToOne(optional = true)
     @JoinColumn(name = "game_id")
     private Game game;
@@ -56,15 +59,43 @@ public class Player extends BaseEntity {
     @OneToMany(mappedBy = "player", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
     private List<TorchRoom> torchRooms;
 
+    private BotTypeEnum botType = null;
+
     public Boolean hasATorch() {
         return this.cards.stream().anyMatch(c -> c.getType() == CardType.torch);
+    }
+
+    public Boolean isABot() {
+        return this.user == null;
+    }
+
+    public String setName() {
+        if (isABot()) {
+            Random randomNum = new Random();
+            Integer randomNumber = randomNum.nextInt(1000);
+            return "bot" + randomNumber;
+        } else {
+            return this.getUser().getUsername();
+        }
+
     }
 
     public Player() {
     }
 
     public Player(User user, Game game, Integer coins, Integer wounds, Character character) {
+        this.name = user.getUsername();
         this.user = user;
+        this.game = game;
+        this.coins = coins;
+        this.wounds = wounds;
+        this.character = character;
+    }
+
+    public Player(String name, BotTypeEnum botType, Game game, Integer coins, Integer wounds,
+            Character character) {
+        this.name = name;
+        this.botType = botType;
         this.game = game;
         this.coins = coins;
         this.wounds = wounds;

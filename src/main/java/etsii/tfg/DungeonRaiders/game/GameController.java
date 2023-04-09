@@ -80,9 +80,9 @@ public class GameController {
             Game game = gameService.findGameById(gameId);
             if (!game.isActive() || !playerService.activeUserGame().equals(game)) {
                 return REDIRECT_GAME + END_GAME_URL;
-            } else if(game.isInLobby()){
+            } else if (game.isInLobby()) {
                 return REDIRECT_GAME + LOBBY_GAME_URL;
-            }else {
+            } else {
                 Player activePlayer = playerService.activePlayer();
                 modelMap.addAttribute("game", game);
                 modelMap.addAttribute("activePlayer", activePlayer);

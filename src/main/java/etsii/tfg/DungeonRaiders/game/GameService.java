@@ -14,6 +14,7 @@ import etsii.tfg.DungeonRaiders.torchRoom.TorchRoomService;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
 import etsii.tfg.DungeonRaiders.card.CardType;
+import etsii.tfg.DungeonRaiders.player.BotTypeEnum;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import etsii.tfg.DungeonRaiders.room.FinalBoss;
@@ -212,5 +213,19 @@ public class GameService {
         }
         game.setWinnerPlayer(winner);
         save(game);
+    }
+
+    public void addBot(int gameId, BotTypeEnum botTypeEnum) {
+        Game game = findGameById(gameId);
+        if (game.isInLobby() && game.getMaxPlayers() >= game.getPlayers().size() + 1) {
+            playerService.botJoinGame(game, botTypeEnum);
+        }
+    }
+
+    public void kickPlayer(int gameId, int playerId) {
+        Game game = findGameById(gameId);
+        if (game.isInLobby() && isActiveUserCreator(game)) {
+            playerService.deleteById(playerId);
+        }
     }
 }

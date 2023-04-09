@@ -5,6 +5,11 @@
               description="Name of user" %>
 <%@ attribute name="img" required="true" rtexprvalue="true"
               description="Image of character" %>
+<%@ attribute name="id" required="true" rtexprvalue="true"
+              description="Id of player" %>
+<%@ attribute name="isGameCreator" required="true" rtexprvalue="true"
+              description="Active user is game creator" type="java.lang.Boolean" %>
+
 
 
     <c:if test="${not empty name }">
@@ -15,8 +20,13 @@
                 </div>
                 <div class="col-md-7 my-auto  mx-auto ">
                         <c:out value="${name}" />
+                        <c:if test="${isGameCreator && pageContext.request.userPrincipal.name != name }">
+                           <a href="lobby/player/${id}/kick"><img src="/img/icons/Wound.png" width="40px" /> <a/>
+                        </c:if>
                 </div>
+
             </div>
         </div>
-        </c:if>
+       
+    </c:if>
     

@@ -3,18 +3,25 @@ package etsii.tfg.DungeonRaiders.game;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import etsii.tfg.DungeonRaiders.player.BotTypeEnum;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
+import etsii.tfg.DungeonRaiders.user.User;
+import etsii.tfg.DungeonRaiders.user.UserService;
 import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 
 @RequestMapping("/game")
@@ -36,6 +43,7 @@ public class LobbyController {
     private static final String RELOAD_LOBBY_GAME_VIEW = "games/reloadGameLobby";
     private static final String JOIN_LOBBY_GAME_URL = "/{gameId}/join";
     private static final String PLAYING_GAME_BASE_URL = "/playing";
+    private static final String KICK_PLAYER_GAME_URL = LOBBY_GAME_URL + "/player/{playerId}/kick";
 
     private PlayerService playerService;
     private GameService gameService;
@@ -104,6 +112,7 @@ public class LobbyController {
             } else if (!game.isActive()) {
                 return REDIRECT_GAME_BASE + LIST_GAME_URL;
             } else {
+                modelMap.addAttribute("botTypes", BotTypeEnum.values());
                 modelMap.addAttribute("game", game);
                 return LOBBY_GAME_VIEW;
             }
@@ -111,6 +120,25 @@ public class LobbyController {
         } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
+    }
+
+    @PostMapping(LOBBY_GAME_URL)
+    public String addBotGameUrl(@PathVariable("gameId") int gameId,
+            @ModelAttribute("botTypeEnum") BotTypeEnum botTypeEnum, BindingResult result) {
+        if (result.hasErrors()) {
+            return REDIRECT_GAME_BASE + LOBBY_GAME_URL;
+        } else {
+            gameService.addBot(gameId, botTypeEnum);
+            return REDIRECT_GAME_BASE + LOBBY_GAME_URL;
+        }
+
+    }
+
+    @GetMapping(KICK_PLAYER_GAME_URL)
+    public String kickPlayerGameUrl(@PathVariable("gameId") int gameId,
+            @PathVariable("playerId") int playerId) {
+        gameService.kickPlayer(gameId, playerId);
+        return REDIRECT_GAME_BASE + LOBBY_GAME_URL;
     }
 
     @GetMapping(RELOAD_LOBBY_GAME_URL)
@@ -143,4 +171,5 @@ public class LobbyController {
             return REDIRECT_GAME_BASE + LIST_GAME_URL;
         }
     }
+
 }

@@ -25,10 +25,9 @@ public class PlayerService {
     }
 
     public void joinGame(Game game) {
-        // Creates a new player from the authenticated user and gives them all their
+        // Creates a new player from a user and gives them all their
         // initial player attributes
         User user = userService.authenticatedUser();
-
         Character randomCharacter = getRandomCharacterNotUsed(game);
         Player newPlayer = new Player(user, game, randomCharacter.getInitialCoins(),
                 randomCharacter.getInitialWounds(), randomCharacter);
@@ -73,5 +72,15 @@ public class PlayerService {
         List<Player> otherPlayers = new ArrayList<>(game.getPlayers());
         otherPlayers.remove(activePlayer);
         return otherPlayers;
+    }
+
+    public void botJoinGame(Game game, BotTypeEnum botType) {
+        Character randomCharacter = getRandomCharacterNotUsed(game);
+        Random randomNum = new Random();
+        Integer randomNumber = randomNum.nextInt(1000);
+        String botName = "bot" + randomNumber;
+        Player newPlayer = new Player(botName, botType, game, randomCharacter.getInitialCoins(),
+                randomCharacter.getInitialWounds(), randomCharacter);
+        save(newPlayer);
     }
 }

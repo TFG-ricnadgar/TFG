@@ -84,4 +84,8 @@ public class Game extends BaseEntity {
         return players.size() >= 3;
     }
 
+    public Integer botAmount() {
+        return (int) this.players.stream().filter(p -> p.isABot()).count();
+    }
+
 }
