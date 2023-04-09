@@ -13,6 +13,7 @@ import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeonService;
 import etsii.tfg.DungeonRaiders.torchRoom.TorchRoomService;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.card.CardState;
 import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.player.BotTypeEnum;
 import etsii.tfg.DungeonRaiders.player.Player;
@@ -118,10 +119,10 @@ public class GameService {
         Boolean cardIsPlayableInRoom = swordWithEnemy || keyWithTreasure || escapeCardWithFinalBoss || card.isBasic()
                 || card.getType().equals(CardType.crystalBall);
 
-        if (playerInGame && game.isInGame() && cardIsOwnedByPlayer && !card.getIsUsed() && cardNotPlayedInTurn
+        if (playerInGame && game.isInGame() && cardIsOwnedByPlayer && card.getCardState().equals(CardState.NOT_PLAYED)
+                && cardNotPlayedInTurn
                 && cardIsPlayableInRoom) {
-            card.setIsUsed(true);
-            card.setIsRecentlyUsed(true);
+            card.setCardState(CardState.RECENTLY_PLAYED);
             cardService.save(card);
 
             List<Card> cardsPlayedThisTurn = cardService.findAllCardsPlayedThisTurn(game.getId());

@@ -25,6 +25,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.card.CardState;
 import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.player.Character;
 import etsii.tfg.DungeonRaiders.player.Player;
@@ -206,7 +207,7 @@ class GameServiceTest {
     @ParameterizedTest
     @WithMockUser(username = "userTest2")
     @CsvFileSource(resources = "/game/playCard.csv", numLinesToSkip = 1)
-    void testPlayCardInTypeOfRoom(Integer roomId, CardType cardType, Boolean isPlayed) {
+    void testPlayCardInTypeOfRoom(Integer roomId, CardType cardType, CardState cardState) {
         gameTest1.setPlayers(allPlayers); // Needed only in tests
         gameService.startGame(gameTest1);
 
@@ -219,8 +220,7 @@ class GameServiceTest {
         Mockito.when(roomDungeonService.getExactRoomInGame(0, 0, gameTest1.getId())).thenReturn(room);
 
         gameService.playCard(gameTest1, card);
-        assertEquals(isPlayed, card.getIsRecentlyUsed());
-        assertEquals(isPlayed, card.getIsUsed());
+        assertEquals(cardState, card.getCardState());
     }
 
     @Test

@@ -25,7 +25,7 @@ public class Card extends BaseEntity {
     public Card(CardType type, Player player) {
         this.type = type;
         this.player = player;
-        this.isUsed = false;
+        this.cardState = CardState.NOT_PLAYED;
     }
 
     @ManyToOne(optional = false)
@@ -36,14 +36,7 @@ public class Card extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private CardType type;
 
-    @NotNull
-    private Boolean isUsed = false;
-
-    @NotNull
-    private Boolean isRecentlyUsed = false;
-
-    @NotNull
-    private Boolean isRevealed = false;
+    private CardState cardState = CardState.NOT_PLAYED;
 
     public Boolean isBasic() {
         return this.type.equals(CardType.one) || this.type.equals(CardType.two) || this.type.equals(CardType.three)

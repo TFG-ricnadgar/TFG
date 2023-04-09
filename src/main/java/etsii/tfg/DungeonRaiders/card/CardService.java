@@ -84,12 +84,10 @@ public class CardService {
         room.effect(game, cardsPlayedThisTurn, playerService, this);
     }
 
-    public void newRoomHand(Game game) {
-        List<Card> gameCards = findAllCardsPlayedThisTurn(game.getId());
-        for (Card card : gameCards) {
+    private void setStateBasicCards(List<Card> cards, CardState cardState) {
+        for (Card card : cards) {
             if (card.isBasic()) {
-                card.setIsRecentlyUsed(false);
-                card.setIsRevealed(false);
+                card.setCardState(cardState);
                 save(card);
             } else {
                 deleteCard(card);
@@ -97,18 +95,14 @@ public class CardService {
         }
     }
 
+    public void newRoomHand(Game game) {
+        List<Card> gameCards = findAllCardsPlayedThisTurn(game.getId());
+        setStateBasicCards(gameCards, CardState.PLAYED);
+    }
+
     public void newFloorHand(Game game) {
         List<Card> gameCards = findAllCardsPlayed(game.getId());
-        for (Card card : gameCards) {
-            if (card.isBasic()) {
-                card.setIsRecentlyUsed(false);
-                card.setIsUsed(false);
-                card.setIsRevealed(false);
-                save(card);
-            } else {
-                deleteCard(card);
-            }
-        }
+        setStateBasicCards(gameCards, CardState.NOT_PLAYED);
     }
 
     public void handleCrystallBall(Game game, List<Card> cardsPlayedThisTurn) {
@@ -116,7 +110,7 @@ public class CardService {
             if (card.getType().equals(CardType.crystalBall)) {
                 deleteCard(card);
             } else {
-                card.setIsRevealed(true);
+                card.setCardState(CardState.REVEALED);
                 save(card);
             }
         }
