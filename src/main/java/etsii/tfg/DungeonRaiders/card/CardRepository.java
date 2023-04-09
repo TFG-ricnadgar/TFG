@@ -12,14 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardRepository extends CrudRepository<Card, Integer> {
 
-    @Query("SELECT c FROM Card c WHERE c.player.id = ?1 AND (c.cardState=etsii.tfg.DungeonRaiders.card.CardState.RECENTLY_PLAYED OR c.cardState=etsii.tfg.DungeonRaiders.card.CardState.REVEALED)")
-    Card findCardPlayedThisTurn(Integer playerId);
-
     @Query("SELECT c From Card c WHERE c.player.game.id = ?1 AND (c.cardState=etsii.tfg.DungeonRaiders.card.CardState.RECENTLY_PLAYED OR c.cardState=etsii.tfg.DungeonRaiders.card.CardState.REVEALED)")
     List<Card> findAllCardsPlayedThisTurn(Integer gameId);
 
-    @Query("SELECT c From Card c WHERE c.player.game.id= ?1 AND c.cardState=etsii.tfg.DungeonRaiders.card.CardState.PLAYED")
-    List<Card> findAllCardsPlayed(Integer gameId);
+    @Query("SELECT c From Card c WHERE c.player.game.id = ?1 AND c.cardState!=etsii.tfg.DungeonRaiders.card.CardState.NOT_PLAYED")
+    List<Card> findAllCardsPlayedEver(Integer gameId);
 
     @Transactional
     @Modifying

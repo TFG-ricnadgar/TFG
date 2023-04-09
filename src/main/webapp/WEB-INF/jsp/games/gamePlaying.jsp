@@ -26,25 +26,6 @@
                     <span id="allReloadInfo">
                     </span>
 
-                    <div class="col d-flex justify-content-center">
-                        <c:forEach items="${activePlayer.cards}" var="card">
-                            <c:if test="${card.cardState == CardState.NOT_PLAYED}">
-                                <div class="card text-center" style="background-color:#f3e1c0;margin:5px;">
-                                    <img src="${card.type.image}" width="70px" />
-                                    <a href="card/${card.id}/play">
-                                        <button type="button" class="btn btn-lg btn-primary btn-block"
-                                            style="background-color: #e86e02; border-color: #9b5c26;">
-                                            Jugar
-                                        </button>
-                                    </a>
-                                </div>
-                            </c:if>
-                        </c:forEach>
-                    </div>
-
-                    <span id="activePlayerInfo">
-
-                    </span>
 
                     <div class="text-center" style="margin-top: 8px;">
                         <a href="exit" style="color: #961212;">
@@ -93,17 +74,6 @@
                             });
                         }
 
-                        function changePlayer() {
-                            var content = $('#activePlayerInfo');
-                            var url = window.location.pathname + "/active";
-                            var pageTextBetweenDelimiters;
-                            content.load(url, function (response, status, xhr) {
-                                var fullPageTextAsString = response;
-                                pageTextBetweenDelimiters = fullPageTextAsString.substring(fullPageTextAsString.indexOf("<jspTagStart />"), fullPageTextAsString.indexOf("<jspTagEnd />"));
-                                content.html(pageTextBetweenDelimiters);
-                            });
-                        }
-
                         function checkTurnChanged() {
                             var url = window.location.pathname + "/turn";
                             $.get(url, function (data, status) {
@@ -111,7 +81,6 @@
                                     turn = data;
                                 } else if (turn != data) {
                                     changeRoomsPlayers();
-                                    changePlayer();
                                     turn = data;
                                 }
                             });
@@ -133,7 +102,6 @@
                         var players = "0";
                         var revealedCards = false;
                         changeRoomsPlayers();
-                        changePlayer();
                         setInterval(checkGameReloadNeeded, 3000);
                         setInterval(checkPlayersChanged, 6000);
                         setInterval(checkTurnChanged, 3000);

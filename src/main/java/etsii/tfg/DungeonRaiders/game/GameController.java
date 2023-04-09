@@ -34,8 +34,6 @@ public class GameController {
     private static final String END_GAME_VIEW = "games/finishedGame";
     private static final String RELOAD_PLAYING_GAME_URL = "/{gameId}/playing/reload";
     private static final String RELOAD_PLAYING_GAME_VIEW = "games/reloadDataInGame";
-    private static final String PLAYER_PLAYING_GAME_URL = "/{gameId}/playing/active";
-    private static final String ACTIVE_PLAYING_GAME_VIEW = "games/activePlayerInGame";
     private static final String LOBBY_GAME_URL = "/{gameId}/lobby";
 
     private GameService gameService;
@@ -105,15 +103,9 @@ public class GameController {
         modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);
         modelMap.addAttribute("revealedCards", revealedCards);
         modelMap.addAttribute("activePlayer", activePlayer);
+        modelMap.addAttribute("actualRoom",
+                roomDungeonService.actualFloor(game, activePlayer).get(game.getActualRoomInFloor()).getRoom());
         return RELOAD_PLAYING_GAME_VIEW;
-
-    }
-
-    @GetMapping(PLAYER_PLAYING_GAME_URL)
-    public String activePlayerInGame(ModelMap modelMap) {
-        Player activePlayer = playerService.activePlayer();
-        modelMap.addAttribute("activePlayer", activePlayer);
-        return ACTIVE_PLAYING_GAME_VIEW;
 
     }
 
@@ -149,7 +141,8 @@ public class GameController {
             @PathVariable("roomDungeonId") int roomDungeonId) {
         try {
             RoomDungeon roomDungeon = roomDungeonService.findRoomDungeonById(roomDungeonId);
-            gameService.playTorchCard(roomDungeon);
+            Player activePlayer = playerService.activePlayer();
+            gameService.playTorchCard(activePlayer, roomDungeon);
             return REDIRECT_GAME + PLAYING_GAME_URL;
         } catch (NoSuchElementException | NullPointerException e) {
             return REDIRECT_GAME + LIST_GAME_URL;

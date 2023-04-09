@@ -327,7 +327,7 @@ class GameServiceTest {
         cards.add(card);
         player1.setCards(cards);
 
-        gameService.playTorchCard(roomDungeon);
+        gameService.playTorchCard(playerService.activePlayer(), roomDungeon);
         if (isPlayed) {
             Mockito.verify(torchRoomService).revealRoom(roomDungeon, player1);
             Mockito.verify(cardService).deleteCardById(card.getId());

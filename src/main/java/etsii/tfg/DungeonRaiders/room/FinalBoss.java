@@ -109,4 +109,10 @@ public class FinalBoss extends Room {
             }
         }
     }
+
+    @Override
+    public Boolean cardIsPlayable(Card card) {
+        return card.isBasic() || card.getType().equals(CardType.sword) || card.getType().equals(this.escapeCard)
+                || card.getType().equals(CardType.crystalBall);
+    }
 }

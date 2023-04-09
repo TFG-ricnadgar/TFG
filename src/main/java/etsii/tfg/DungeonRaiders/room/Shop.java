@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import lombok.Getter;
@@ -63,5 +64,10 @@ public class Shop extends Room {
                     break;
             }
         }
+    }
+
+    @Override
+    public Boolean cardIsPlayable(Card card) {
+        return card.isBasic() || card.getType().equals(CardType.crystalBall);
     }
 }

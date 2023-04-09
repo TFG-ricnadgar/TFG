@@ -14,7 +14,7 @@
                                         <img src="${player.character.image}" width="50px" />
                                     </div>
                                     <div class="col-md-7 mx-auto my-auto">
-                                        <c:out value="${player.user.username}" />
+                                        <c:out value="${player.name}" />
                                     </div>
                                 </div>
                                 <div class="row text-center">
@@ -192,6 +192,62 @@
                                 </c:choose>
                             </div>
                         </c:forEach>
+                    </div>
+
+                    <div class="col d-flex justify-content-center">
+                        <c:forEach items="${activePlayer.cards}" var="card">
+                            <c:if test="${card.cardState == CardState.NOT_PLAYED}">
+                                <div class="card text-center" style="background-color:#f3e1c0;margin:5px;">
+                                    <img src="${card.type.image}" width="70px" />
+                                    <c:if
+                                        test="${ actualRoom.cardIsPlayable(card) && !activePlayer.alreadyPlayedACard()}">
+                                        <a href="card/${card.id}/play">
+                                            <button type="button" class="btn btn-lg btn-primary btn-block"
+                                                style="background-color: #e86e02; border-color: #9b5c26;">
+                                                Jugar
+                                            </button>
+                                        </a>
+                                    </c:if>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+
+
+                    <div class="col d-flex justify-content-center">
+
+                        <div class="card" style="background-color:#c2ac98;margin:10px;width:27rem;font-size:25px">
+                            <div class="row text-center">
+                                <div class="col-md-2 mx-auto  my-auto ">
+                                    <img src="${activePlayer.character.image}" width="70px" />
+                                </div>
+                                <div class="col-md-8 my-auto mx-auto">
+                                    <c:out value="${activePlayer.user.username}" />
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-sm-5 my-auto mx-auto ">
+                                    <img src="/img/icons/Coin.png" width="50px" />
+                                    <c:out value="${activePlayer.coins}" />
+                                </div>
+                                <div class="col-sm-5 my-auto mx-auto">
+                                    <img src="/img/icons/Wound.png" width="50px" />
+                                    <c:out value="${activePlayer.wounds}" />
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-sm-7" style="padding-right: 0px;">
+                                    Cartas jugadas :
+                                </div>
+                                <div class="col-sm-5" style="padding-left: 0px;">
+                                    <c:forEach items="${activePlayer.cards}" var="card">
+                                        <c:if test="${card.cardState == CardState.PLAYED}">
+                                            <img src="${card.type.image}" width="30px" />
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <jspTagEnd />
                 </body>

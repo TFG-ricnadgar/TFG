@@ -18,7 +18,6 @@ import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.player.BotTypeEnum;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
-import etsii.tfg.DungeonRaiders.room.FinalBoss;
 import etsii.tfg.DungeonRaiders.room.Room;
 import etsii.tfg.DungeonRaiders.user.UserService;
 import etsii.tfg.DungeonRaiders.util.DungeonRaiderConstants;
@@ -101,44 +100,60 @@ public class GameService {
         roomDungeonService.generateDungeon(game);
     }
 
-    public void playCard(Game game, Card card) {
-        Player activePlayer = playerService.activePlayer();
+    private Boolean cardIsPlayable(Player activePlayer, Game game, Card card) {
 
         Boolean playerInGame = game.equals(activePlayer.getGame());
 
         Boolean cardIsOwnedByPlayer = card.getPlayer().equals(activePlayer);
-        Boolean cardNotPlayedInTurn = cardService.findCardPlayedInTurn(card.getPlayer().getId()) == null;
         Room roomInPlay = roomDungeonService.getExactRoomInGame(game.getActualRoomInFloor(), game.getActualFloor(),
                 game.getId());
 
-        Boolean swordWithEnemy = (roomInPlay.getType() == "ENEMY" || roomInPlay.getType() == "FINAL_BOSS")
-                && card.getType() == CardType.sword;
-        Boolean keyWithTreasure = roomInPlay.getType() == "TREASURE" && card.getType() == CardType.key;
-        Boolean escapeCardWithFinalBoss = roomInPlay.getType() == "FINAL_BOSS"
-                && ((FinalBoss) roomInPlay).getEscapeCard() == card.getType();
-        Boolean cardIsPlayableInRoom = swordWithEnemy || keyWithTreasure || escapeCardWithFinalBoss || card.isBasic()
-                || card.getType().equals(CardType.crystalBall);
+        return playerInGame && game.isInGame() && cardIsOwnedByPlayer
+                && card.getCardState().equals(CardState.NOT_PLAYED)
+                && !activePlayer.alreadyPlayedACard()
+                && roomInPlay.cardIsPlayable(card);
+    }
 
-        if (playerInGame && game.isInGame() && cardIsOwnedByPlayer && card.getCardState().equals(CardState.NOT_PLAYED)
-                && cardNotPlayedInTurn
-                && cardIsPlayableInRoom) {
+    public void playCard(Game game, Card card) {
+        Player activePlayer = playerService.activePlayer();
+
+        if (cardIsPlayable(activePlayer, game, card)) {
             card.setCardState(CardState.RECENTLY_PLAYED);
             cardService.save(card);
 
-            List<Card> cardsPlayedThisTurn = cardService.findAllCardsPlayedThisTurn(game.getId());
-            Boolean allPlayersPlayedCards = cardsPlayedThisTurn.size() >= game.getPlayers().size();
-            if (allPlayersPlayedCards
-                    && cardsPlayedThisTurn.stream().anyMatch(c -> c.getType() == CardType.crystalBall)) {
-                cardService.handleCrystallBall(game, cardsPlayedThisTurn);
-            } else if (allPlayersPlayedCards) {
-                cardService.handleCardsPlayedThisTurn(game, cardsPlayedThisTurn);
-                newTurn(game);
+            List<Card> cardsPlayedThisTurnByHumans = cardService.findAllCardsPlayedThisTurnByHumans(game.getId());
+            Boolean allPlayersPlayedCards = cardsPlayedThisTurnByHumans.size() >= game.humanPlayersAmount();
+
+            if (allPlayersPlayedCards) {
+                handleEndOfTurn(game);
             }
+
         }
     }
 
-    public void playTorchCard(RoomDungeon roomDungeon) {
-        Player activePlayer = playerService.activePlayer();
+    private void handleEndOfTurn(Game game) {
+        List<Player> bots = game.getPlayers().stream().filter(p -> p.isABot()).collect(Collectors.toList());
+        for (Player bot : bots) {
+            if (!bot.alreadyPlayedACard()) {
+                Card card = bot.getBotType().chooseCard(bot, roomDungeonService.actualFloor(game, bot), game);
+                card.setCardState(CardState.RECENTLY_PLAYED);
+                cardService.save(card);
+            }
+        }
+
+        List<Card> cardsPlayedThisTurn = cardService.findAllCardsPlayedThisTurn(game.getId());
+        if (cardsPlayedThisTurn.stream().anyMatch(c -> c.getType() == CardType.crystalBall)) {
+            cardService.handleCrystallBall(game, cardsPlayedThisTurn);
+            if (cardService.findAllCardsPlayedThisTurnByHumans(game.getId()).size() >= game.humanPlayersAmount()) {
+                handleEndOfTurn(game);
+            }
+        } else {
+            cardService.handleCardsPlayedThisTurn(game, cardsPlayedThisTurn);
+            newTurn(game);
+        }
+    }
+
+    public void playTorchCard(Player activePlayer, RoomDungeon roomDungeon) {
         Game game = roomDungeon.getGame();
         Boolean playerInGame = game.equals(activePlayer.getGame());
         Boolean roomIsHidden = roomDungeon.getIsHidden() && game.getActualFloor() == roomDungeon.getFloor()

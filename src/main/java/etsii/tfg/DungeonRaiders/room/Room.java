@@ -32,4 +32,5 @@ public abstract class Room extends BaseEntity {
     public abstract void effect(Game game, List<Card> cardsPlayedThisTurn, PlayerService playerService,
             CardService cardService);
 
+    public abstract Boolean cardIsPlayable(Card card);
 }

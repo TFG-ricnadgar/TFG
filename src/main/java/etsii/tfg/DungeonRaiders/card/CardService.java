@@ -2,6 +2,8 @@ package etsii.tfg.DungeonRaiders.card;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,10 +29,6 @@ public class CardService {
         this.playerService = playerService;
     }
 
-    public void deleteCard(Card card) {
-        cardRepository.delete(card);
-    }
-
     public void save(Card card) {
         cardRepository.save(card);
     }
@@ -47,16 +45,17 @@ public class CardService {
         cardRepository.deleteCardById(id);
     }
 
-    public Card findCardPlayedInTurn(Integer playerId) {
-        return cardRepository.findCardPlayedThisTurn(playerId);
-    }
-
     public List<Card> findAllCardsPlayedThisTurn(Integer gameId) {
         return cardRepository.findAllCardsPlayedThisTurn(gameId);
     }
 
-    private List<Card> findAllCardsPlayed(Integer gameId) {
-        return cardRepository.findAllCardsPlayed(gameId);
+    public List<Card> findAllCardsPlayedThisTurnByHumans(Integer gameId) {
+        return findAllCardsPlayedThisTurn(gameId).stream().filter(c -> !c.getPlayer().isABot())
+                .collect(Collectors.toList());
+    }
+
+    private List<Card> findAllCardsPlayedEver(Integer gameId) {
+        return cardRepository.findAllCardsPlayedEver(gameId);
     }
 
     public void givePlayersStartingGameHand(List<Player> players) {
@@ -90,7 +89,7 @@ public class CardService {
                 card.setCardState(cardState);
                 save(card);
             } else {
-                deleteCard(card);
+                deleteCardById(card.getId());
             }
         }
     }
@@ -101,14 +100,14 @@ public class CardService {
     }
 
     public void newFloorHand(Game game) {
-        List<Card> gameCards = findAllCardsPlayed(game.getId());
+        List<Card> gameCards = findAllCardsPlayedEver(game.getId());
         setStateBasicCards(gameCards, CardState.NOT_PLAYED);
     }
 
     public void handleCrystallBall(Game game, List<Card> cardsPlayedThisTurn) {
         for (Card card : cardsPlayedThisTurn) {
             if (card.getType().equals(CardType.crystalBall)) {
-                deleteCard(card);
+                deleteCardById(card.getId());
             } else {
                 card.setCardState(CardState.REVEALED);
                 save(card);
@@ -119,4 +118,5 @@ public class CardService {
     public List<CardType> revealedCards(Integer gameId) {
         return cardRepository.findAllRevealedCards(gameId);
     }
+
 }

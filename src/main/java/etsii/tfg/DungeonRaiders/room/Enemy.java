@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.card.CardService;
+import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
@@ -81,5 +82,10 @@ public class Enemy extends Room {
                 playerService.save(player);
             }
         }
+    }
+
+    @Override
+    public Boolean cardIsPlayable(Card card) {
+        return card.isBasic() || card.getType().equals(CardType.sword) || card.getType().equals(CardType.crystalBall);
     }
 }

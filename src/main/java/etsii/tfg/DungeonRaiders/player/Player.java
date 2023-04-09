@@ -2,6 +2,7 @@ package etsii.tfg.DungeonRaiders.player;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,9 +17,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import etsii.tfg.DungeonRaiders.card.Card;
+import etsii.tfg.DungeonRaiders.card.CardState;
 import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
+import etsii.tfg.DungeonRaiders.room.Room;
+import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
 import etsii.tfg.DungeonRaiders.torchRoom.TorchRoom;
 import etsii.tfg.DungeonRaiders.user.User;
 import lombok.Getter;
@@ -65,8 +69,18 @@ public class Player extends BaseEntity {
         return this.cards.stream().anyMatch(c -> c.getType() == CardType.torch);
     }
 
+    public List<Card> getPlayableCards(Room room) {
+        return this.cards.stream().filter(c -> c.getCardState() == CardState.NOT_PLAYED && room.cardIsPlayable(c))
+                .collect(Collectors.toList());
+    }
+
     public Boolean isABot() {
         return this.user == null;
+    }
+
+    public Boolean alreadyPlayedACard() {
+        return this.cards.stream().anyMatch(
+                c -> c.getCardState().equals(CardState.RECENTLY_PLAYED) || c.getCardState().equals(CardState.REVEALED));
     }
 
     public String setName() {

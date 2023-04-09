@@ -7,7 +7,6 @@
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
                     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
                     crossorigin="anonymous">
-                <meta http-equiv="refresh" content="5">
             </head>
 
             <body style="font-family:fantasy; letter-spacing: 1px;">
@@ -33,13 +32,15 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <div class="card" style="background-color:#c4b3a2;margin:10px;width:17rem">
+                    <div class="card" style="background-color:#c4b3a2;margin:10px;width:22rem">
                         <div class="row text-center">
                             <div class="col-md-3 mx-auto my-auto ">
-                                <img src="${game.winnerPlayer.character.image}" width="50px" />
+                                <img src="${game.winnerPlayer.character.image}" width="80px" />
                             </div>
                             <div class="col-md-7 mx-auto my-auto">
-                                <c:out value="${game.winnerPlayer.user.username}" />
+                                <h3>
+                                    <c:out value="${game.winnerPlayer.name}" />
+                                </h3>
                             </div>
                         </div>
                     </div>
@@ -57,13 +58,15 @@
                 <div class="col d-flex justify-content-center">
                     <c:forEach items="${game.players}" var="player">
                         <c:if test="${player.id != game.winnerPlayer.id}">
-                            <div class="card" style="background-color:#c4b3a2;margin:10px;width:17rem">
+                            <div class="card" style="background-color:#c4b3a2;margin:10px;width:20rem">
                                 <div class="row text-center">
                                     <div class="col-md-3 mx-auto my-auto ">
-                                        <img src="${player.character.image}" width="50px" />
+                                        <img src="${player.character.image}" width="80px" />
                                     </div>
                                     <div class="col-md-7 mx-auto my-auto">
-                                        <c:out value="${player.user.username}" />
+                                        <h4>
+                                            <c:out value="${player.name}" />
+                                        </h4>
                                     </div>
                                 </div>
                             </div>
