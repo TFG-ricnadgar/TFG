@@ -224,7 +224,7 @@ public class GameService {
 
     public void kickPlayer(int gameId, int playerId) {
         Game game = findGameById(gameId);
-        if (game.isInLobby() && isActiveUserCreator(game)) {
+        if (game.isInLobby() && isActiveUserCreator(game) && playerService.activePlayer().getId() != playerId) {
             playerService.deleteById(playerId);
         }
     }
