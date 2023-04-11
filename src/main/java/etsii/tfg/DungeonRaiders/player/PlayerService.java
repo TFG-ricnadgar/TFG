@@ -56,8 +56,14 @@ public class PlayerService {
         return randomCharacter;
     }
 
-    public void deleteById(Integer id) {
-        playerRepository.deletePlayerById(id);
+    public void deleteByPlayer(Player player) {
+        player.getCards().clear();
+        save(player);
+        playerRepository.deletePlayerById(player.getId());
+    }
+
+    public void deleteById(int playerId) {
+        playerRepository.deletePlayerById(playerId);
     }
 
     public Game activeUserGame() {

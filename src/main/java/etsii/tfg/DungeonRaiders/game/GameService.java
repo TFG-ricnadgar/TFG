@@ -75,12 +75,8 @@ public class GameService {
             if (lessThanMinPlayersInGame || creatorExitsInLobby) {
                 deleteGame(activeGame.getId());
             } else {
-                List<Player> playerList = activeGame.getPlayers();
-                Player player = playerList.stream()
-                        .filter(p -> p.getUser().getUsername().equals(userService.authenticatedUsername())).findAny()
-                        .get();
-
-                playerService.deleteById(player.getId());
+                Player player = playerService.activePlayer();
+                playerService.deleteByPlayer(player);
             }
         }
     }

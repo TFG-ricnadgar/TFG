@@ -12,6 +12,7 @@ INSERT INTO games(name,creator_username,max_players,turn) VALUES ('prueba','user
 INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('user1',1,1,0,0,3);
 INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('user2',2,1,0,0,0);
 INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('user3',3,1,0,0,0);
+INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('user4',3,1,0,0,0);
 
 --Traps
 INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ATRAPAMONEDAS','TRAP',1,1,2,2,1,1);

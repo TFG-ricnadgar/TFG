@@ -1,5 +1,6 @@
 package etsii.tfg.DungeonRaiders.card;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,7 +29,7 @@ public class Card extends BaseEntity {
         this.cardState = CardState.NOT_PLAYED;
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "player_id")
     private Player player;
 
