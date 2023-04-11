@@ -28,7 +28,7 @@ public class Card extends BaseEntity {
         this.cardState = CardState.NOT_PLAYED;
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "player_id")
     private Player player;
 

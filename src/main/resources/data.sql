@@ -14,7 +14,7 @@ INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('u
 INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('user3',3,1,0,0,0);
 
 --Traps
-INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ATRAPAMONEDAS','TRAP',-1,1,2,2,1,1);
+INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ATRAPAMONEDAS','TRAP',1,1,2,2,1,1);
 INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('CALDERO DE LAVA','TRAP',0,1,2,3,1,1);
 INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('TRAMPA DE PINCHOS','TRAP',1,1,1,2,0,0);
 INSERT INTO rooms(name,room_type,value_two,value_three,value_four,value_five,target,damage_type) VALUES('ROCA GIGANTE','TRAP',0,1,2,2,0,0);

@@ -22,7 +22,6 @@ import etsii.tfg.DungeonRaiders.card.CardType;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.model.BaseEntity;
 import etsii.tfg.DungeonRaiders.room.Room;
-import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
 import etsii.tfg.DungeonRaiders.torchRoom.TorchRoom;
 import etsii.tfg.DungeonRaiders.user.User;
 import lombok.Getter;

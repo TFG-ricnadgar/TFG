@@ -15,7 +15,7 @@ public enum DamageType {
     COIN("/img/icons/Coin.png") {
         @Override
         Player damage(Player player, Integer effectAmount) {
-            Integer newCoins = player.getCoins() - effectAmount > 0 ? player.getCoins() + effectAmount : 0;
+            Integer newCoins = player.getCoins() - effectAmount > 0 ? player.getCoins() - effectAmount : 0;
             player.setCoins(newCoins);
             return player;
         }
@@ -23,7 +23,7 @@ public enum DamageType {
     WOUNDCOIN("/img/icons/WoundCoin.png") {
         @Override
         Player damage(Player player, Integer effectAmount) {
-            Integer newCoins = player.getCoins() - effectAmount > 0 ? player.getCoins() + effectAmount : 0;
+            Integer newCoins = player.getCoins() - effectAmount > 0 ? player.getCoins() - effectAmount : 0;
             player.setCoins(newCoins);
             player.setWounds(player.getWounds() + effectAmount);
             return player;
