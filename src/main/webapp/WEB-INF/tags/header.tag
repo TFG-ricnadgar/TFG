@@ -35,6 +35,9 @@
                                 <a class="nav-link" href="/game/new">Crear partida</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="<c:url value="/user/stats" />">Estad&iacutesticas usuario</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/user/update">Modificar usuario</a>
                             </li>
                             <li class="nav-item">

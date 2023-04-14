@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import etsii.tfg.DungeonRaiders.game.Game;
+import etsii.tfg.DungeonRaiders.player.Character;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
 import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 
@@ -31,14 +32,18 @@ public class UserController {
     private static final String LOGIN_USER_URL = "/login";
     private static final String UPDATE_USER_URL = "/update";
     private static final String UPDATE_USER_VIEW = "users/updateUserForm";
+    private static final String STATS_USER_URL = "/stats";
+    private static final String STATS_USER_VIEW = "users/stats";
 
     private UserService userService;
     private PlayerService playerService;
+    private StatService statService;
 
     @Autowired
-    public UserController(UserService userService, PlayerService playerService) {
+    public UserController(UserService userService, PlayerService playerService, StatService statService) {
         this.userService = userService;
         this.playerService = playerService;
+        this.statService = statService;
     }
 
     @GetMapping(value = REGISTER_USER_URL)
@@ -129,6 +134,23 @@ public class UserController {
             return "redirect:/";
         }
 
+    }
+
+    @GetMapping(STATS_USER_URL)
+    public String showStatsUser(ModelMap modelMap) {
+        Integer userId = userService.authenticatedUser().getId();
+
+        for (Character characterPlayer : Character.values()) {
+            modelMap.addAttribute("games" + characterPlayer.getName(),
+                    statService.gamesPlayedWithCaracterByUserId(userId, characterPlayer));
+        }
+        modelMap.addAttribute("totalCoins", statService.totalCoinsByUserId(userId));
+        modelMap.addAttribute("totalWounds", statService.totalWoundsByUserId(userId));
+        modelMap.addAttribute("gamesMaxCoins", statService.gamesMaxCoinsByUserId(userId));
+        modelMap.addAttribute("gamesMaxWounds", statService.gamesMaxWoundsUserId(userId));
+        modelMap.addAttribute("gamesWon", statService.gamesWonByUserId(userId));
+        modelMap.addAttribute("gamesPlayed", statService.gamesPlayedByUserId(userId));
+        return STATS_USER_VIEW;
     }
 
 }
