@@ -3,6 +3,7 @@ package etsii.tfg.DungeonRaiders.player;
 import java.util.List;
 import java.util.Random;
 
+import etsii.tfg.DungeonRaiders.bot.CleverBot;
 import etsii.tfg.DungeonRaiders.card.Card;
 import etsii.tfg.DungeonRaiders.game.Game;
 import etsii.tfg.DungeonRaiders.roomDungeon.RoomDungeon;
@@ -24,10 +25,8 @@ public enum BotTypeEnum {
     CLEVER("Bot inteligente") {
 
         @Override
-
         public Card chooseCard(Player bot, List<RoomDungeon> actualFloor, Game game) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("No esta implementado todavia");
+            return CleverBot.chooseCard(bot, actualFloor, game);
         }
 
     };

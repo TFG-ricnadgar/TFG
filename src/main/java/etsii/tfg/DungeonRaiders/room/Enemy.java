@@ -88,4 +88,9 @@ public class Enemy extends Room {
     public Boolean cardIsPlayable(Card card) {
         return card.isBasic() || card.getType().equals(CardType.sword) || card.getType().equals(CardType.crystalBall);
     }
+
+    public Integer minValueToWinSafe(Integer playerAmount) {
+        Integer minValue = Math.floorDiv(getHealth(playerAmount), playerAmount);
+        return getHealth(playerAmount) % playerAmount == 0 ? minValue : minValue + 1;
+    }
 }

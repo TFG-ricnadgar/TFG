@@ -115,4 +115,9 @@ public class FinalBoss extends Room {
         return card.isBasic() || card.getType().equals(CardType.sword) || card.getType().equals(this.escapeCard)
                 || card.getType().equals(CardType.crystalBall);
     }
+
+    public Integer minValueToWinSafe(Integer playerAmount) {
+        Integer minValue = Math.floorDiv(getHealth(playerAmount), playerAmount);
+        return getHealth(playerAmount) % playerAmount == 0 ? minValue : minValue + 1;
+    }
 }
