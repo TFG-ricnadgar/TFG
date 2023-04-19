@@ -1,5 +1,6 @@
 package etsii.tfg.DungeonRaiders.game;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -84,6 +85,10 @@ public class Game extends BaseEntity {
 
     public Integer humanPlayersAmount() {
         return (int) this.players.stream().filter(p -> !p.isABot()).count();
+    }
+
+    public Player mostWoundedPlayer() {
+        return this.players.stream().max(Comparator.comparingInt(p -> p.getWounds())).get();
     }
 
 }

@@ -53,6 +53,12 @@ public class CleverBot {
         Map<String, Integer> valuesNeeded = new HashMap<>();
         Integer minCardValue = 99;
         Integer amountCardsNeeded = 0;
+        Room actualRoom = actualFloor.get(roomInFloor).getRoom();
+        Integer maxDamage = 0;
+        if (actualRoom.getType() == "ENEMY") {
+            Enemy actualEnemyRoom = (Enemy) actualRoom;
+            maxDamage = actualEnemyRoom.getDamage();
+        }
         List<Room> nextVisibleRooms = actualFloor.stream()
                 .filter(rd -> !rd.getIsHidden() && rd.getPosition() > roomInFloor)
                 .map(rd -> rd.getRoom())
@@ -61,6 +67,7 @@ public class CleverBot {
             if (room.getType() == "ENEMY") {
                 Enemy enemyRoom = (Enemy) room;
                 amountCardsNeeded++;
+                maxDamage = maxDamage < enemyRoom.getDamage() ? enemyRoom.getDamage() : maxDamage;
                 if (enemyRoom.minValueToWinSafe(playersAmount) < minCardValue) {
                     minCardValue = enemyRoom.minValueToWinSafe(playersAmount);
                 }
@@ -74,6 +81,7 @@ public class CleverBot {
             }
         }
 
+        valuesNeeded.put("maxDamage", maxDamage);
         valuesNeeded.put("minCardValue", minCardValue);
         valuesNeeded.put("amountCardsNeeded", amountCardsNeeded);
         return valuesNeeded;
@@ -81,20 +89,24 @@ public class CleverBot {
 
     private static Card pickHighestNotNeededOrLowestNeeded(Game game, List<Card> sortedCardsInHand, Player bot,
             List<RoomDungeon> actualFloor) {
-        Map<String, Integer> values = minCardValueNeededNextRooms(actualFloor, game.getActualRoomInFloor(),
+        Map<String, Integer> valuesNeededNextRooms = minCardValueNeededNextRooms(actualFloor,
+                game.getActualRoomInFloor(),
                 game.getPlayers().size(), bot);
 
-        // Firstly is checked that all the cards in hand are needed for future rooms
-        if (values.get("amountCardsNeeded") < sortedCardsInHand.size()) {
+        // Firstly checked that the bot is not acting too safe
+        if (valuesNeededNextRooms.get("maxDamage") < game.mostWoundedPlayer().getWounds() - bot.getWounds()) {
+            return sortedCardsInHand.get(0);
+            // Secondly checked that all the cards in hand are needed for future rooms
+        } else if (valuesNeededNextRooms.get("amountCardsNeeded") < sortedCardsInHand.size()) {
 
             // In case there is at least a single card left that is not needed, the ones not
             // needed are filtered into a list
             sortedCardsInHand = sortedCardsInHand.stream()
-                    .filter(c -> c.getType().getValue() < values.get("minCardValue"))
+                    .filter(c -> c.getType().getValue() < valuesNeededNextRooms.get("minCardValue"))
                     .sorted(Comparator.comparingInt(c -> c.getType().getValue()))
                     .collect(Collectors.toList());
             // The biggest one available not needed is picked
-            sortedCardsInHand.get(sortedCardsInHand.size() - 1);
+            return sortedCardsInHand.get(sortedCardsInHand.size() - 1);
         }
         // In the case that all are needed the smallest is picked
         return sortedCardsInHand.get(0);
@@ -103,12 +115,23 @@ public class CleverBot {
     private static Card handleEnemy(List<Card> sortedCardsInHand, Player bot, Enemy roomInPlay,
             List<RoomDungeon> actualFloor,
             Game game) {
+        Map<String, Integer> valuesNeededNextRooms = minCardValueNeededNextRooms(actualFloor,
+                game.getActualRoomInFloor(),
+                game.getPlayers().size(), bot);
+        Boolean isTheBotActingTooSafe = valuesNeededNextRooms
+                .get("maxDamage") < game.mostWoundedPlayer().getWounds() - bot.getWounds();
         Integer minValueInCardRequiredToWinSafe = roomInPlay.minValueToWinSafe(game.getPlayers().size());
         List<Card> cardsWithMinValueToWinSafe = sortedCardsInHand.stream()
                 .filter(c -> c.getType().getValue() >= minValueInCardRequiredToWinSafe)
                 .collect(Collectors.toList());
-        if (cardsWithMinValueToWinSafe.size() > 0) {
+        // If the bot is acting too safe ignores all and plays the highest card in hand
+        if (isTheBotActingTooSafe) {
+            return sortedCardsInHand.get(0);
+            // If the bot is acting not too safe and has cards in hand not needed for future
+            // plays the highest of those
+        } else if (cardsWithMinValueToWinSafe.size() > 0) {
             return cardsWithMinValueToWinSafe.get(0);
+            // If all cards are needed plays the lowest
         } else {
             return sortedCardsInHand.get(sortedCardsInHand.size() - 1);
         }
@@ -134,7 +157,7 @@ public class CleverBot {
                 break;
         }
 
-        // First is checked the player is not the one targeted by the trap
+        // Firstly checked the player is not the one targeted by the trap
         if (agressive) {
             cardPlayed = pickHighestNotNeededOrLowestNeeded(game, sortedCardsInHand, bot, actualFloor);
 
