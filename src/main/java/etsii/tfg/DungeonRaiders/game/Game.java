@@ -1,6 +1,8 @@
 package etsii.tfg.DungeonRaiders.game;
 
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -48,6 +50,8 @@ public class Game extends BaseEntity {
 
     @NotNull
     private Integer turn = -1;
+
+    private Date nextTurnTime;
 
     @OneToMany(mappedBy = "game", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
     private List<Player> players;

@@ -1,5 +1,6 @@
 package etsii.tfg.DungeonRaiders.game;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -84,6 +85,7 @@ public class GameController {
                 Player activePlayer = playerService.activePlayer();
                 modelMap.addAttribute("game", game);
                 modelMap.addAttribute("activePlayer", activePlayer);
+
                 return PLAYING_GAME_VIEW;
             }
         } catch (NoSuchElementException | NullPointerException e) {
@@ -98,6 +100,7 @@ public class GameController {
         List<Player> otherPlayers = playerService.otherPlayersInGame(game, activePlayer);
         List<RoomDungeon> floorDungeonRooms = roomDungeonService.actualFloor(game, activePlayer);
         List<CardType> revealedCards = cardService.revealedCards(game.getId());
+        modelMap.addAttribute("nextTurnTime", game.getNextTurnTime());
         modelMap.addAttribute("otherPlayers", otherPlayers);
         modelMap.addAttribute("game", game);
         modelMap.addAttribute("floorDungeonRooms", floorDungeonRooms);

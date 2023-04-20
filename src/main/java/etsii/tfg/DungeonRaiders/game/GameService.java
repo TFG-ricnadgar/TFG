@@ -1,6 +1,8 @@
 package etsii.tfg.DungeonRaiders.game;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -92,8 +94,13 @@ public class GameService {
 
     public void startGame(Game game) {
         game.setTurn(0);
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.add(Calendar.MINUTE, 1);
+        Date nextTurnTime = currentTime.getTime();
+        game.setNextTurnTime(nextTurnTime);
         cardService.givePlayersStartingGameHand(game.getPlayers());
         roomDungeonService.generateDungeon(game);
+
     }
 
     private Boolean cardIsPlayable(Player activePlayer, Game game, Card card) {
@@ -128,10 +135,17 @@ public class GameService {
     }
 
     private void handleEndOfTurn(Game game) {
-        List<Player> bots = game.getPlayers().stream().filter(p -> p.isABot()).collect(Collectors.toList());
-        for (Player bot : bots) {
-            if (!bot.alreadyPlayedACard()) {
-                Card card = bot.getBotType().chooseCard(bot, roomDungeonService.actualFloor(game, bot), game);
+        List<Player> playersNotPlayingCards = game.getPlayers().stream().filter(p -> !p.alreadyPlayedACard())
+                .collect(Collectors.toList());
+        for (Player player : playersNotPlayingCards) {
+            if (player.isABot()) {
+                Card card = player.getBotType().chooseCard(player, roomDungeonService.actualFloor(game, player), game);
+                card.setCardState(CardState.RECENTLY_PLAYED);
+                cardService.save(card);
+            } else {
+                Random rand = new Random();
+                // Takes a random card from all basic cards in hand
+                Card card = player.getBasicPlayableCards().get(rand.nextInt(player.getBasicPlayableCards().size()));
                 card.setCardState(CardState.RECENTLY_PLAYED);
                 cardService.save(card);
             }
@@ -142,6 +156,12 @@ public class GameService {
             cardService.handleCrystallBall(game, cardsPlayedThisTurn);
             if (cardService.findAllCardsPlayedThisTurnByHumans(game.getId()).size() >= game.humanPlayersAmount()) {
                 handleEndOfTurn(game);
+            } else {
+                Calendar currentTime = Calendar.getInstance();
+                currentTime.add(Calendar.SECOND, 20);
+                Date nextTurnTime = currentTime.getTime();
+                game.setNextTurnTime(nextTurnTime);
+                save(game);
             }
         } else {
             cardService.handleCardsPlayedThisTurn(game, cardsPlayedThisTurn);
@@ -164,6 +184,12 @@ public class GameService {
     public void newTurn(Game game) {
         Integer oldFloor = game.getActualFloor();
         game.setTurn(game.getTurn() + 1);
+
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.add(Calendar.MINUTE, 1);
+        Date nextTurnTime = currentTime.getTime();
+        game.setNextTurnTime(nextTurnTime);
+
         if (game.getActualFloor() >= DungeonRaiderConstants.FLOOR_AMOUNT) {
             handleEndOfGame(game);
         } else if (oldFloor == game.getActualFloor()) {
@@ -238,6 +264,14 @@ public class GameService {
         Game game = findGameById(gameId);
         if (game.isInLobby() && isActiveUserCreator(game) && playerService.activePlayer().getId() != playerId) {
             playerService.deleteById(playerId);
+        }
+    }
+
+    public void checkTurnFinished(int gameId) {
+        Game game = findGameById(gameId);
+        Date nowDate = new Date();
+        if (game.isInGame() && game.getNextTurnTime().before(nowDate)) {
+            handleEndOfTurn(game);
         }
     }
 }

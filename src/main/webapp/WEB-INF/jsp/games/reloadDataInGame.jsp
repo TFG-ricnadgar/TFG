@@ -5,8 +5,13 @@
 
                 <body>
                     <jspTagStart />
-                    <div class="col d-flex justify-content-center">
+                    <h2>
+                        <div id="countdownTurn" class="col d-flex justify-content-center">
 
+                        </div>
+                    </h2>
+
+                    <div class="col d-flex justify-content-center">
                         <c:forEach items="${otherPlayers}" var="player">
                             <div class="card" style="background-color:#c4b3a2;margin:10px;width:17rem">
                                 <div class="row text-center">
@@ -249,5 +254,25 @@
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        function changeCountDown(nextTimeTurn) {
+                            var content = $('#countdownTurn');
+                            var now = new Date().getTime();
+                            var distance = nextTimeTurn - now;
+                            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                            var valueHtml = "TURNO RESTANTE: " + minutes + "m " + seconds + "s";
+                            if (distance >= 0) {
+                                content.html(valueHtml);
+                            } else {
+                                content.html("TURNO FINALIZADO")
+                            }
+
+                        }
+                        var nextTimeTurn = new Date('${nextTurnTime}').getTime();
+                        changeCountDown(nextTimeTurn)
+                        setInterval(function () { changeCountDown(nextTimeTurn) }, 1000);
+                    </script>
                     <jspTagEnd />
                 </body>

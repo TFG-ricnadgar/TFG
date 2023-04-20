@@ -30,6 +30,7 @@ public class GameRestController {
 
     @GetMapping(TURN_GAME_URL)
     public Integer getGameTurn(@PathVariable("gameId") int gameId) {
+        gameService.checkTurnFinished(gameId);
         return gameService.findGameById(gameId).getTurn();
     }
 
