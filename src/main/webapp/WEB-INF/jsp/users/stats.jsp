@@ -37,32 +37,70 @@
                             </h2>
 
                             <br>
+
                             <h2>
-                                <dungeonRaiders:stat name="Partidas jugadas como" img="/img/characters/ThiefLogo.png"
-                                    value="${gamesLadrona}" />
+                                Partidas jugadas con:
                             </h2>
-                            <br>
-                            <h2>
-                                <dungeonRaiders:stat name="Partidas jugadas como " img="/img/characters/KnightLogo.png"
-                                    value="${gamesCaballero}" />
-                            </h2>
-                            <br>
-                            <h2>
-                                <dungeonRaiders:stat name="Partidas jugadas como " value="${gamesGuerrero}"
-                                    img="/img/characters/WarriorLogo.png" />
-                            </h2>
-                            <br>
-                            <h2>
-                                <dungeonRaiders:stat name="Partidas jugadas como "
-                                    img="/img/characters/SorcererLogo.png" value="${gamesHechicero}" />
-                            </h2>
-                            <br>
-                            <h2>
-                                <dungeonRaiders:stat name="Partidas jugadas como "
-                                    img="/img/characters/ExplorerLogo.png" value="${gamesExploradora}" />
-                            </h2>
+                            <canvas id="charactersChart"></canvas>
 
                         </div>
                     </div>
                 </div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+                <script type="text/javascript">
+                    var xValues = ['Ladrona', 'Caballero', 'Guerrero', 'Hechicero', 'Exploradora'];
+                    var images = ["/img/characters/ThiefLogo.png", "/img/characters/KnightLogo.png", "/img/characters/WarriorLogo.png", "/img/characters/SorcererLogo.png", "/img/characters/ExplorerLogo.png"]
+                        .map(png => {
+                            const image = new Image();
+                            image.src = png;
+                            return image;
+                        });
+                    var yValues = ['${gamesLadrona}', '${gamesCaballero}', '${gamesGuerrero}', '${gamesHechicero}', '${gamesExploradora}'];
+
+                    var barColors = ["red", "green", "blue", "orange", "brown"];
+
+                    new Chart("charactersChart", {
+                        type: "bar",
+                        plugins: [{
+                            afterDraw: chart => {
+                                var ctx = chart.chart.ctx;
+                                var xAxis = chart.scales['x-axis-0'];
+                                var yAxis = chart.scales['y-axis-0'];
+                                xAxis.ticks.forEach((value, index) => {
+                                    var x = xAxis.getPixelForTick(index);
+                                    ctx.drawImage(images[index], x - 21, yAxis.bottom + 10, 45, 50);
+                                });
+                            },
+                        }],
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                backgroundColor: barColors,
+                                data: yValues,
+
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function (value) { if (value % 1 === 0) { return value; } }
+                                    }
+                                }],
+                                xAxes: [{
+                                    ticks: {
+                                        padding: 55
+                                    }
+                                }],
+
+                            }
+                        }
+                    });
+                </script>
             </body>
