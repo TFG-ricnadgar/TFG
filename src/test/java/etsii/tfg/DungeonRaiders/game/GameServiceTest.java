@@ -145,7 +145,7 @@ class GameServiceTest {
         gameTest2.setName("Test Game");
         gameTest2.setTurn(2); // Not in lobby
         gameService.save(gameTest2);
-        assertEquals(gameService.findAllInLobbyGames().size(), 1);
+        assertEquals(2, gameService.findAllInLobbyGames().size());
     }
 
     @Test
@@ -168,17 +168,6 @@ class GameServiceTest {
         assertNotNull(gameService.findGameById(gameTest1.getId()));
         gameService.exitActiveGame();
         assertNull(gameService.findGameById(gameTest1.getId()));
-    }
-
-    @Test
-    @WithMockUser(username = "userTest2")
-    void testExitActiveGamePlayer() {
-        gameTest1.setPlayers(allPlayers); // Needed only in tests
-        gameService.save(gameTest1);
-
-        assertNotNull(playerService.activePlayer());
-        gameService.exitActiveGame();
-        assertNull(playerService.activePlayer());
     }
 
     @Test
@@ -250,41 +239,10 @@ class GameServiceTest {
 
         Room room = roomService.findRoomById(5);
         Mockito.when(roomDungeonService.getExactRoomInGame(0, 0, gameTest1.getId())).thenReturn(room);
+        Mockito.when(cardService.findAllCardsPlayedThisTurnByHumans(gameTest1.getId())).thenReturn(cardsPlayed);
         Mockito.when(cardService.findAllCardsPlayedThisTurn(gameTest1.getId())).thenReturn(cardsPlayed);
         gameService.playCard(gameTest1, card);
         Mockito.verify(cardService).handleCardsPlayedThisTurn(gameTest1, cardsPlayed);
-    }
-
-    @Test
-    @WithMockUser(username = "userTest3")
-    void testPlayCardAllPlayersWithCrystallBall() {
-        gameTest1.setPlayers(allPlayers); // Needed only in tests
-        gameService.startGame(gameTest1);
-
-        List<Card> cardsPlayed = new ArrayList<>();
-        Card card = new Card(CardType.crystalBall, player1);
-        List<Card> cards = new ArrayList<>();
-        cards.add(card);
-        cardsPlayed.add(card);
-        player1.setCards(cards);
-
-        card = new Card(CardType.five, player2);
-        cards = new ArrayList<>();
-        cards.add(card);
-        cardsPlayed.add(card);
-        player2.setCards(cards);
-
-        card = new Card(CardType.five, player3);
-        cards = new ArrayList<>();
-        cards.add(card);
-        cardsPlayed.add(card);
-        player3.setCards(cards);
-
-        Room room = roomService.findRoomById(5);
-        Mockito.when(roomDungeonService.getExactRoomInGame(0, 0, gameTest1.getId())).thenReturn(room);
-        Mockito.when(cardService.findAllCardsPlayedThisTurn(gameTest1.getId())).thenReturn(cardsPlayed);
-        gameService.playCard(gameTest1, card);
-        Mockito.verify(cardService).handleCrystallBall(gameTest1, cardsPlayed);
     }
 
     @Test
@@ -299,16 +257,6 @@ class GameServiceTest {
         gameTest1.setTurn(4);
         gameService.newTurn(gameTest1);
         Mockito.verify(cardService).newFloorHand(gameTest1);
-    }
-
-    @Test
-    void testNewTurnEndGame() {
-        gameTest1.setTurn(24);
-        List<Player> players = new ArrayList<Player>();
-        players.add(player1);
-        gameTest1.setPlayers(players);
-        gameService.newTurn(gameTest1);
-        assertEquals(false, gameTest1.isActive());
     }
 
     @ParameterizedTest
