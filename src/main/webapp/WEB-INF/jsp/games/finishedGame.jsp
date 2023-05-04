@@ -11,17 +11,19 @@
 
             <body style="font-family:fantasy; letter-spacing: 1px;">
                 <dungeonRaiders:header />
-                <div class="col-lg text-center" style="color: #e86e02;">
+                <div class="col-lg text-center">
                     <h1 class="display-5">
-                        <u>MISIÓN:</u>
-                        <span style="color: black;">
-                            <c:out value="${game.name}" />
-                        </span>
+                        <span style="color: #e86e02;"><u>MISIÓN:</u></span>
+                        <c:out value="${game.name}" />
                         <div style="color: rgb(124, 18, 18);">
                             FINALIZADA
                         </div>
                     </h1>
+
+                    <h2 id="durationGame"></h2>
                 </div>
+
+
 
                 <div class="col-lg text-center">
                     <h2>
@@ -83,4 +85,14 @@
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
                     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
                     crossorigin="anonymous"></script>
+
+
+                <script>
+                    var distance = '${game.durationInSeconds}';
+                    var content = $('#durationGame');
+                    var minutes = Math.floor((distance / 60));
+                    var seconds = Math.floor((distance % (60)));
+                    var valueHtml = minutes + "m " + seconds + "s";
+                    content.html(valueHtml);
+                </script>
             </body>

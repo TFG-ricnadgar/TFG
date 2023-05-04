@@ -1,10 +1,8 @@
 package etsii.tfg.DungeonRaiders.game;
 
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -53,6 +51,10 @@ public class Game extends BaseEntity {
 
     private Date nextTurnTime;
 
+    private Date startTime;
+
+    private Integer durationInSeconds;
+
     @OneToMany(mappedBy = "game", cascade = { CascadeType.ALL, CascadeType.REMOVE }, orphanRemoval = true)
     private List<Player> players;
 
@@ -94,5 +96,4 @@ public class Game extends BaseEntity {
     public Player mostWoundedPlayer() {
         return this.players.stream().max(Comparator.comparingInt(p -> p.getWounds())).get();
     }
-
 }

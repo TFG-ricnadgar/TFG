@@ -3,7 +3,7 @@
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
             <head>
-                <title>Estadísticas personales</title>
+                <title>Estadísticas globales</title>
             </head>
 
             <body>
@@ -11,11 +11,9 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="text-center" style="font-family:fantasy; letter-spacing: 1px;">
-                            <h1 class="display-3"><u>Estadísticas individuales</u></h1>
+                            <h1 class="display-3"><u>Estadísticas globales</u></h1>
                             <h2>
-                                <dungeonRaiders:stat name="Partidas jugadas" value="${gamesPlayed}" />
-                                &ensp; | &ensp;
-                                <dungeonRaiders:stat name="Partidas ganadas" value="${gamesWon}" />
+                                <dungeonRaiders:stat name="Partidas totales jugadas" value="${gamesPlayed}" />
                             </h2>
 
                             <br>
@@ -140,7 +138,6 @@
                     var yValuesWon = ['${gamesWonLadrona}', '${gamesWonCaballero}', '${gamesWonGuerrero}', '${gamesWonHechicero}', '${gamesWonExploradora}']
                     generateChart(xValues, yValues, images, "charactersChart");
                     generateChart(xValues, yValuesWon, images, "charactersChartWon");
-
                 </script>
 
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"

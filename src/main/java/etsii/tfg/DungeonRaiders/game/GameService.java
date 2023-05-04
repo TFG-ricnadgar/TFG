@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,7 @@ public class GameService {
     public void startGame(Game game) {
         game.setTurn(0);
         Calendar currentTime = Calendar.getInstance();
+        game.setStartTime(currentTime.getTime());
         currentTime.add(Calendar.MINUTE, 1);
         Date nextTurnTime = currentTime.getTime();
         game.setNextTurnTime(nextTurnTime);
@@ -250,6 +252,9 @@ public class GameService {
             winner = richestPlayers.get(0);
         }
         game.setWinnerPlayer(winner);
+        Calendar currentTime = Calendar.getInstance();
+        long duration = currentTime.getTime().getTime() - game.getStartTime().getTime();
+        game.setDurationInSeconds((int) TimeUnit.MILLISECONDS.toSeconds(duration));
         save(game);
     }
 

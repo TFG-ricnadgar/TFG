@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -34,6 +33,8 @@ public class UserController {
     private static final String UPDATE_USER_VIEW = "users/updateUserForm";
     private static final String STATS_USER_URL = "/stats";
     private static final String STATS_USER_VIEW = "users/stats";
+    private static final String STATS_GLOBAL_URL = "/globalstats";
+    private static final String STATS_GLOBAL_VIEW = "users/globalstats";
 
     private UserService userService;
     private PlayerService playerService;
@@ -143,6 +144,8 @@ public class UserController {
         for (Character characterPlayer : Character.values()) {
             modelMap.addAttribute("games" + characterPlayer.getName(),
                     statService.gamesPlayedWithCaracterByUserId(userId, characterPlayer));
+            modelMap.addAttribute("gamesWon" + characterPlayer.getName(),
+                    statService.gamesWonWithCaracterByUserId(userId, characterPlayer));
         }
         modelMap.addAttribute("totalCoins", statService.totalCoinsByUserId(userId));
         modelMap.addAttribute("totalWounds", statService.totalWoundsByUserId(userId));
@@ -150,7 +153,29 @@ public class UserController {
         modelMap.addAttribute("gamesMaxWounds", statService.gamesMaxWoundsUserId(userId));
         modelMap.addAttribute("gamesWon", statService.gamesWonByUserId(userId));
         modelMap.addAttribute("gamesPlayed", statService.gamesPlayedByUserId(userId));
+        modelMap.addAttribute("avgGameDuration", statService.avgGameDurationByUserId(userId));
+        modelMap.addAttribute("totalGameDuration", statService.totalGameDurationByUserId(userId));
         return STATS_USER_VIEW;
+    }
+
+    @GetMapping(STATS_GLOBAL_URL)
+    public String showGlobalStats(ModelMap modelMap) {
+
+        for (Character characterPlayer : Character.values()) {
+            modelMap.addAttribute("games" + characterPlayer.getName(),
+                    statService.gamesPlayedWithCaracter(characterPlayer));
+            modelMap.addAttribute("gamesWon" + characterPlayer.getName(),
+                    statService.gamesWonWithCaracter(characterPlayer));
+
+        }
+        modelMap.addAttribute("totalCoins", statService.totalCoins());
+        modelMap.addAttribute("totalWounds", statService.totalWounds());
+        modelMap.addAttribute("gamesMaxCoins", statService.gamesMaxCoins());
+        modelMap.addAttribute("gamesMaxWounds", statService.gamesMaxWounds());
+        modelMap.addAttribute("gamesPlayed", statService.gamesPlayed());
+        modelMap.addAttribute("avgGameDuration", statService.avgGameDuration());
+        modelMap.addAttribute("totalGameDuration", statService.totalGameDuration());
+        return STATS_GLOBAL_VIEW;
     }
 
 }
