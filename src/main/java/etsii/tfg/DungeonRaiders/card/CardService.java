@@ -83,25 +83,25 @@ public class CardService {
         room.effect(game, cardsPlayedThisTurn, playerService, this);
     }
 
-    private void setStateBasicCards(List<Card> cards, CardState cardState) {
-        for (Card card : cards) {
+    public void newRoomHand(Game game) {
+        List<Card> gameCards = findAllCardsPlayedThisTurn(game.getId());
+        for (Card card : gameCards) {
+            card.setCardState(CardState.PLAYED);
+            save(card);
+        }
+
+    }
+
+    public void newFloorHand(Game game) {
+        List<Card> gameCards = findAllCardsPlayedEver(game.getId());
+        for (Card card : gameCards) {
             if (card.isBasic()) {
-                card.setCardState(cardState);
+                card.setCardState(CardState.NOT_PLAYED);
                 save(card);
             } else {
                 deleteCardById(card.getId());
             }
         }
-    }
-
-    public void newRoomHand(Game game) {
-        List<Card> gameCards = findAllCardsPlayedThisTurn(game.getId());
-        setStateBasicCards(gameCards, CardState.PLAYED);
-    }
-
-    public void newFloorHand(Game game) {
-        List<Card> gameCards = findAllCardsPlayedEver(game.getId());
-        setStateBasicCards(gameCards, CardState.NOT_PLAYED);
     }
 
     public void handleCrystallBall(Game game, List<Card> cardsPlayedThisTurn) {
