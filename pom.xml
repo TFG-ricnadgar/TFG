@@ -16,8 +16,8 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-boot-admin.version>2.7.4</spring-boot-admin.version>
-		 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		 <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>	
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>	
 	</properties>
 	<dependencies>
 		<dependency>
@@ -137,9 +137,17 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<encoding>UTF-8</encoding>
+					<executable>true</executable>
+					<jvmArguments>-Dfile.encoding=UTF8</jvmArguments>
 				</configuration>
-			</plugin>
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>springloaded</artifactId>
+						<version>1.2.5.RELEASE</version>
+					</dependency>
+				</dependencies>
+        </plugin>
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
