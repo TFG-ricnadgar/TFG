@@ -73,6 +73,13 @@ public class Player extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
+    public List<Card> getPlayableCardsForBots(Room room) {
+        return this.cards.stream()
+                .filter(c -> c.getCardState() == CardState.NOT_PLAYED && room.cardIsPlayable(c)
+                        && !c.getType().equals(CardType.crystalBall))
+                .collect(Collectors.toList());
+    }
+
     public List<Card> getBasicPlayableCards() {
         return this.cards.stream().filter(c -> c.getCardState() == CardState.NOT_PLAYED && c.isBasic())
                 .collect(Collectors.toList());

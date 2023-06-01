@@ -23,7 +23,7 @@ public class CleverBot {
     public static Card chooseCard(Player bot, List<RoomDungeon> actualFloor, Game game) {
         Room roomInPlay = actualFloor.get(game.getActualRoomInFloor()).getRoom();
         Card cardPlayed = new Card();
-        List<Card> sortedCardsInHand = bot.getPlayableCards(roomInPlay).stream()
+        List<Card> sortedCardsInHand = bot.getPlayableCardsForBots(roomInPlay).stream()
                 .sorted(Comparator.comparingInt(c -> c.getType().getValue()))
                 .collect(Collectors.toList());
         switch (roomInPlay.getType()) {
@@ -51,8 +51,8 @@ public class CleverBot {
     private static Map<String, Integer> minCardValueNeededNextRooms(List<RoomDungeon> actualFloor, Integer roomInFloor,
             Integer playersAmount, Player bot) {
         Map<String, Integer> valuesNeeded = new HashMap<>();
-        Integer minCardValue = 99;
-        Integer amountCardsNeeded = 0;
+        Integer amountTreasuresFloor = 0;
+        Integer amountEnemiesFloor = 0;
         Room actualRoom = actualFloor.get(roomInFloor).getRoom();
         Integer maxDamage = 0;
         if (actualRoom.getType() == "ENEMY") {
@@ -66,24 +66,25 @@ public class CleverBot {
         for (Room room : nextVisibleRooms) {
             if (room.getType() == "ENEMY") {
                 Enemy enemyRoom = (Enemy) room;
-                amountCardsNeeded++;
+                amountEnemiesFloor++;
                 maxDamage = maxDamage < enemyRoom.getDamage() ? enemyRoom.getDamage() : maxDamage;
-                if (enemyRoom.minValueToWinSafe(playersAmount) < minCardValue) {
-                    minCardValue = enemyRoom.minValueToWinSafe(playersAmount);
-                }
-
+            }
+            if (room.getType() == "TREASURE") {
+                amountTreasuresFloor++;
             }
         }
 
         for (Card card : bot.getCards()) {
-            if (card.getType() == CardType.sword) {
-                amountCardsNeeded--;
+            if (card.getType() == CardType.sword && amountEnemiesFloor > 0) {
+                amountEnemiesFloor--;
+            } else if (card.getType() == CardType.key && amountTreasuresFloor > 0) {
+                amountTreasuresFloor--;
             }
         }
 
         valuesNeeded.put("maxDamage", maxDamage);
-        valuesNeeded.put("minCardValue", minCardValue);
-        valuesNeeded.put("amountCardsNeeded", amountCardsNeeded);
+        valuesNeeded.put("amountEnemiesFloor", amountEnemiesFloor);
+        valuesNeeded.put("amountTreasuresFloor", amountTreasuresFloor);
         return valuesNeeded;
     }
 
@@ -95,21 +96,21 @@ public class CleverBot {
 
         // Firstly checked that the bot is not acting too safe
         if (valuesNeededNextRooms.get("maxDamage") < game.mostWoundedPlayer().getWounds() - bot.getWounds()) {
+            // Checks if all cards in hand will be needed for treasures
+            if (valuesNeededNextRooms.get("amountTreasuresFloor") >= sortedCardsInHand.size()) {
+                return sortedCardsInHand.get(0);
+            } else {
+                return sortedCardsInHand
+                        .get((sortedCardsInHand.size() - 1) - valuesNeededNextRooms.get("amountTreasuresFloor"));
+            }
+        } else if (valuesNeededNextRooms.get("amountEnemiesFloor")
+                + valuesNeededNextRooms.get("amountTreasuresFloor") >= sortedCardsInHand.size()) {
             return sortedCardsInHand.get(0);
-            // Secondly checked that all the cards in hand are needed for future rooms
-        } else if (valuesNeededNextRooms.get("amountCardsNeeded") < sortedCardsInHand.size()) {
-
-            // In case there is at least a single card left that is not needed, the ones not
-            // needed are filtered into a list
-            sortedCardsInHand = sortedCardsInHand.stream()
-                    .filter(c -> c.getType().getValue() < valuesNeededNextRooms.get("minCardValue"))
-                    .sorted(Comparator.comparingInt(c -> c.getType().getValue()))
-                    .collect(Collectors.toList());
-            // The biggest one available not needed is picked
-            return sortedCardsInHand.get(sortedCardsInHand.size() - 1);
+        } else {
+            return sortedCardsInHand
+                    .get(sortedCardsInHand.size() - 1 - valuesNeededNextRooms.get("amountTreasuresFloor")
+                            - valuesNeededNextRooms.get("amountEnemiesFloor"));
         }
-        // In the case that all are needed the smallest is picked
-        return sortedCardsInHand.get(0);
     }
 
     private static Card handleEnemy(List<Card> sortedCardsInHand, Player bot, Enemy roomInPlay,
@@ -124,15 +125,15 @@ public class CleverBot {
         List<Card> cardsWithMinValueToWinSafe = sortedCardsInHand.stream()
                 .filter(c -> c.getType().getValue() >= minValueInCardRequiredToWinSafe)
                 .collect(Collectors.toList());
-        // If the bot is acting too safe ignores all and plays the highest card in hand
+        // If the bot is acting too safe ignores all and plays the lowest card in hand
         if (isTheBotActingTooSafe) {
             return sortedCardsInHand.get(0);
-            // If the bot is acting not too safe and has cards in hand not needed for future
-            // plays the highest of those
+            // If the bot is acting not too safe and has multiple possible good playable
+            // cards uses the lowest of those
         } else if (cardsWithMinValueToWinSafe.size() > 0) {
             return cardsWithMinValueToWinSafe.get(0);
-            // If all cards are needed plays the lowest
         } else {
+            // If all cards are needed plays the lowest
             return sortedCardsInHand.get(sortedCardsInHand.size() - 1);
         }
 
