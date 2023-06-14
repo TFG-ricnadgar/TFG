@@ -3,9 +3,6 @@ package etsii.tfg.DungeonRaiders.game;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import etsii.tfg.DungeonRaiders.player.BotTypeEnum;
 import etsii.tfg.DungeonRaiders.player.Player;
 import etsii.tfg.DungeonRaiders.player.PlayerService;
-import etsii.tfg.DungeonRaiders.user.User;
-import etsii.tfg.DungeonRaiders.user.UserService;
 import etsii.tfg.DungeonRaiders.validation.BasicInfo;
 
 @RequestMapping("/game")

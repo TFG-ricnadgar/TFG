@@ -33,6 +33,8 @@
                         </a>
                     </div>
 
+                    <br>
+
 
 
 
@@ -101,8 +103,9 @@
                         var turn = "-2";
                         var players = "0";
                         var revealedCards = false;
+                        checkPlayersChanged();
                         changeRoomsPlayers();
-
+                        checkTurnChanged();
                         setInterval(checkGameReloadNeeded, 3000);
                         setInterval(checkPlayersChanged, 6000);
                         setInterval(checkTurnChanged, 3000);

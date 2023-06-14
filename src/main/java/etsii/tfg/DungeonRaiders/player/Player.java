@@ -1,6 +1,5 @@
 package etsii.tfg.DungeonRaiders.player;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -71,6 +70,13 @@ public class Player extends BaseEntity {
 
     public List<Card> getPlayableCards(Room room) {
         return this.cards.stream().filter(c -> c.getCardState() == CardState.NOT_PLAYED && room.cardIsPlayable(c))
+                .collect(Collectors.toList());
+    }
+
+    public List<Card> getPlayableCardsForBots(Room room) {
+        return this.cards.stream()
+                .filter(c -> c.getCardState() == CardState.NOT_PLAYED && room.cardIsPlayable(c)
+                        && !c.getType().equals(CardType.crystalBall))
                 .collect(Collectors.toList());
     }
 

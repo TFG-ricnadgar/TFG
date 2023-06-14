@@ -21,7 +21,7 @@
                                 <h1 class="display-3" style="color: #e86e02;">CREAR PARTIDA</h1>
                                 <form:form modelAttribute="game" class="form-vertical">
                                     <dungeonRaiders:inputField name="name" label="Nombre de la partida" />
-                                    <h4>Maximo de jugadores en partida</h4>
+                                    <h4>Máximo de jugadores en partida</h4>
 
                                     <div class="btn-group btn-group-lg d-grid d-md-flex " role="group"
                                         aria-label="Cantidad maxima de jugadores en partida">

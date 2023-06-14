@@ -38,4 +38,52 @@ public class StatService {
     public Integer gamesMaxWoundsUserId(Integer userId) {
         return statRepository.gamesMaxWoundsByUser(userId);
     }
+
+    public Integer avgGameDurationByUserId(Integer userId) {
+        return statRepository.gamesAvgDurationByUser(userId);
+    }
+
+    public Integer totalGameDurationByUserId(Integer userId) {
+        return statRepository.gamesTotalDurationByUser(userId);
+    }
+
+    public Integer totalCoins() {
+        return statRepository.totalCoins();
+    }
+
+    public Integer gamesPlayedWithCaracter(Character characterPlayer) {
+        return statRepository.gamesPlayedWithCharacter(characterPlayer);
+    }
+
+    public Integer totalWounds() {
+        return statRepository.totalWounds();
+    }
+
+    public Integer gamesMaxCoins() {
+        return statRepository.gamesMaxCoins();
+    }
+
+    public Integer gamesMaxWounds() {
+        return statRepository.gamesMaxWounds();
+    }
+
+    public Integer gamesPlayed() {
+        return statRepository.gamesPlayed();
+    }
+
+    public Integer avgGameDuration() {
+        return statRepository.gamesAvgDuration();
+    }
+
+    public Integer gamesWonWithCaracter(Character characterPlayer) {
+        return statRepository.gamesWonByCharacter(characterPlayer);
+    }
+
+    public Integer gamesWonWithCaracterByUserId(Integer userId, Character characterPlayer) {
+        return statRepository.gamesWonByCharacterByUserId(userId, characterPlayer);
+    }
+
+    public Integer totalGameDuration() {
+        return statRepository.totalGameDuration();
+    }
 }

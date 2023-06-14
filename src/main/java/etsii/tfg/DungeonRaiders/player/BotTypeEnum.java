@@ -16,7 +16,8 @@ public enum BotTypeEnum {
         @Override
         public Card chooseCard(Player bot, List<RoomDungeon> actualFloor, Game game) {
             Random random = new Random();
-            List<Card> playableCards = bot.getPlayableCards(actualFloor.get(game.getActualRoomInFloor()).getRoom());
+            List<Card> playableCards = bot
+                    .getPlayableCardsForBots(actualFloor.get(game.getActualRoomInFloor()).getRoom());
             return playableCards.get(random.nextInt(playableCards.size()));
 
         }
