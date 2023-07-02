@@ -187,7 +187,7 @@
                                                         <img src="${dungeonRoom.room.escapeCard.image}" width="40px" />
                                                     </c:if>
                                                     <c:if test="${dungeonRoom.room.topCardCoinReward > 0}">
-                                                        <img src="/img/icons/topCardReward.png" width="40px" />
+                                                        <img src="/img/icons/TopCardReward.png" width="40px" />
                                                         <c:out value="${dungeonRoom.room.topCardCoinReward}" />
                                                     </c:if>
                                                 </div>
