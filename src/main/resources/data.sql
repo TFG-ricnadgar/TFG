@@ -6,7 +6,7 @@ INSERT INTO users(username,password) VALUES('user4','$2a$10$cwslzAkqoZgLsc0h5pEx
 INSERT INTO users(username,password) VALUES('user5','$2a$10$cwslzAkqoZgLsc0h5pExKee4cVZT56CfOloXW8SRcrXIMnx19O9u6');
 
 --Game
-INSERT INTO games(name,creator_username,max_players,turn) VALUES ('pruebá','user1',4,-1);
+INSERT INTO games(name,creator_username,max_players,turn) VALUES ('Partida de prueba','user1',4,-1);
 
 --Players
 INSERT INTO players(name,user_id,game_id,coins,wounds,character_name) VALUES ('user1',1,1,0,0,3);
