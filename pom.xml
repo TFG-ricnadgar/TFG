@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>etsii.tfg</groupId>
 	<artifactId>DungeonRaiders</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<name>DungeonRaiders</name>
 	<description>TFG about Dungeon Raiders by Ricardo Nadal Garcia</description>
 	<properties>
